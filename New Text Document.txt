@@ -1,0 +1,8 @@
+$table->id();
+            $table->string('title');
+            $table->timestamps();
+
+
+
+
+image_categories name_[image]
