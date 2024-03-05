@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\GetDonwloadElderResources;
 use App\Models\Elder;
 use App\Models\Favirateelder;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Traits\RandomIDTrait;
 use Illuminate\Support\Facades\Validator;
@@ -31,8 +33,15 @@ class FavirateelderController extends Controller
             'elder_id' => $elder_id,
 
         ]);
-        return Elder::find($elder_id)->name;
+        return $this->handelResponse('','The elder has been added to your favorites');
     }
 
+    public function Get_Favirate_Elder()
+    {
+        $user_id = auth('sanctum')->user()->id;
+          $elder = User::with('Favirate_Elder')->find($user_id)->favirate_elder;
+         return GetDonwloadElderResources::collection($elder)->resolve();
+
+    }
 
 }

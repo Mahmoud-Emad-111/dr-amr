@@ -65,20 +65,23 @@ class User extends Authenticatable
 
 
 
-    public function Audios()
+    public function Favirate_Audios()
     {
         return $this->belongsToMany(Audio::class,'Favirateaudios');
     }
-    public function images()
+    public function Favirate_images()
     {
         return $this->belongsToMany(Image::class, 'favirateimages');
     }
-    public function books()
+
+    public function Favirate_Books()
     {
         return $this->belongsToMany(Book::class, 'faviratebooks');
     }
-    public function elders()
+
+
+    public function Favirate_Elder()
     {
-        return $this->belongsToMany(Elder::class,'_favirateelders');
+        return $this->belongsToMany(Elder::class,'favirateelders');
     }
 }

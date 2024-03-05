@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IdBookResource;
 use App\Models\Book;
 use App\Models\Faviratebooks;
+use App\Models\User;
 use App\Traits\RandomIDTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,6 +31,12 @@ class FavirateBookController extends Controller
             'book_id' => $book_id,
 
         ]);
-        return Book::find($book_id)->name;
+        return $this->handelResponse('','The Book has been added to your favorites');
     }
+    public function Get_Favirate_Books(){
+        $user_id = auth('sanctum')->user()->id;
+        $data = User::with('Favirate_Books')->find($user_id)->favirate_books;
+       return IdBookResource::collection($data)->resolve();
+
+   }
 }

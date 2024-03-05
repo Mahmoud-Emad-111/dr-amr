@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\imageResource;
 use App\Models\Favirateimage;
 use App\Models\Image;
+use App\Models\User;
 use App\Traits\RandomIDTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,6 +31,12 @@ class FavirateimageController extends Controller
             'image_id' => $image_id,
 
         ]);
-        return Image::find($image_id)->image;
+        return $this->handelResponse('','The image has been added to your favorites');
+    }
+    public function Get_Favirate_image(){
+         $user_id = auth('sanctum')->user()->id;
+        $data = User::with('Favirate_images')->find($user_id)->favirate_images;
+        return imageResource::collection($data)->resolve();
+
     }
 }

@@ -126,17 +126,10 @@ Route::controller(AudiosCategoriesController::class)->prefix('/Audios-Categories
 Route::controller(AudioController::class)->prefix('/Audios/')->group(function () {
     // // this create data with database
     Route::post('insert', 'store');
-    Route::post('store_visit/{id}', 'store_visit');
+    Route::post('Increase-listening', 'store_visit');
     // // get all audio from DB
     Route::post('Get_id', 'Get_id');
 
-    // // this get id Audio -> details Elder
-    // Route::get('getid_Audio','Get_id');
-    // // edit and update Audio
-    // Route::post('Edit','edit');
-
-    // // update-
-    // Route::post('Update_Audio/{id}' , 'update_Audio');
     Route::Get('Get', 'Audios_public');
     Route::post('Audios_public_id', 'Audios_public_id');
 });
@@ -153,9 +146,7 @@ Route::group(['controller' => ImageCategoriesController::class, 'prefix' => '/Im
 
 
 Route::controller(ImageController::class)->prefix('/Images/')->group(function () {
-    // Route::post('Insert','Store');
-    // Route::post('Update','Update');
-    // Route::post('Delete','Delete');
+
     Route::Get('Get', 'Get_public');
 });
 
@@ -182,41 +173,61 @@ Route::group(['controller' => MessageController::class, 'prefix' => '/Message/']
 
 
 
-Route::group(['controller' => DownloadAudioController::class, 'prefix' => '/download/'], function () {
-    Route::post('Donwload-Audio', 'Donwload');
-    Route::get('getAudioData', 'getAudioData');
+
+
+Route::group(['prefix'=>'/download','middleware' => 'auth:sanctum'],function(){
+
+    Route::group(['controller' => DownloadAudioController::class], function () {
+        Route::post('Donwload-Audio', 'Donwload');
+        Route::get('getAudioData', 'getAudioData');
+    });
+
+    Route::group(['controller' => DownloadImageController::class], function () {
+        Route::post('Download-Image', 'DownloadImage');
+        Route::get('getImage', 'getImage');
+    });
+    Route::group(['controller' => DownloadBookController::class], function () {
+        Route::post('Download-Book', 'DownloadBook');
+        Route::get('getBook', 'getBook');
+    });
+    Route::group(['controller' => DownloadelderController::class], function () {
+        Route::post('Download-Elder', 'DownloadElder');
+        Route::get('getElder', 'getElder');
+    });
+
+
 });
 
-Route::group(['controller' => DownloadImageController::class, 'prefix' => '/download/'], function () {
-    Route::post('Download-Image', 'DownloadImage');
-    Route::get('getImage', 'getImage');
+Route::group(['prefix'=>'/Favorite/','middleware' => 'auth:sanctum'],function(){
+    Route::controller(FavirateelderController::class)->group(function () {
+        Route::post('Favorite-Elder', 'favirateElder');
+        Route::get('Get_Favorite_Elder','Get_Favirate_Elder');
+    });
+
+    Route::controller(FavirateimageController::class)->group(function () {
+        Route::post('Favorite-image', 'Favirateimage');
+        Route::get('Get_Favorite_image', 'Get_Favirate_image');
+    });
+
+
+    Route::controller(FavirateBookController::class)->group(function () {
+        Route::post('Favorite-Book', 'FavirateBook');
+        Route::get('Get_Favorite_Books', 'Get_Favirate_Books');
+
+    });
+
+    Route::controller(FavirateAudioController::class)->group(function () {
+        Route::post('Favorite-Audio', 'FavirateAudio');
+        Route::get('Get_Favorite_Audios', 'Get_Favirate_Audios');
+
+    });
+
+
 });
-Route::group(['controller' => DownloadBookController::class, 'prefix' => '/download/'], function () {
-    Route::post('Download-Book', 'DownloadBook');
-    Route::get('getBook', 'getBook');
-});
-Route::group(['controller' => DownloadelderController::class, 'prefix' => '/download/'], function () {
-    Route::post('Download-Elder', 'DownloadElder');
-    Route::get('getElder', 'getElder');
-});
+
+
+
 
 
 
 // Favirate
-Route::controller(FavirateelderController::class)->prefix('/Favirateelder/')->group(function () {
-    Route::post('favirateElder', 'favirateElder');
-});
-
-
-Route::controller(FavirateimageController::class)->prefix('/Favirateimage/')->group(function () {
-    Route::post('Favirateimage', 'Favirateimage');
-});
-
-
-Route::controller(FavirateBookController::class)->prefix('/FavirateBook/')->group(function () {
-    Route::post('FavirateBook', 'FavirateBook');
-});
-
-Route::controller(FavirateAudioController::class)->prefix('/FavirateAudio/')->group(function () {
-    Route::post('FavirateAudio', 'FavirateAudio');
-});

@@ -44,10 +44,17 @@ class AudioController extends Controller
         return $this->handelResponse('', 'The Audio has been added successfully');
     }
 
-    public function store_visit($id)
+    public function store_visit(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:audios,random_id'
+        ]);
+        if ($validate->fails()) {
+            return response()->json($validate->errors());
+        }
+        $ID = $this->getRealID(Audio::class, $request->id)->id;
 
-        $audio = Audio::findOrFail($id);
+        $audio = Audio::findOrFail($ID);
 
         $audio->increment('visits_count');
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AudiofavirateUserResource;
 use App\Models\Audio;
 use App\Models\Favirateaudios;
+use App\Models\User;
 use App\Traits\RandomIDTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -28,12 +30,14 @@ class FavirateAudioController extends Controller
             'audio_id'=>$audio_id,
 
         ]);
-        return Audio::find($audio_id)->audio;
+        return $this->handelResponse('','The Audio has been added to your favorites');
     }
-<<<<<<< HEAD
+    public function Get_Favirate_Audios()
+    {
+        $user_id = auth('sanctum')->user()->id;
+          $data = User::with('Favirate_Audios')->find($user_id)->favirate_audios;
+        return AudiofavirateUserResource::collection($data)->resolve();
 
+    }
 
-=======
-    
->>>>>>> 4da57474ec17f6fc8bd2a781ec86725735aef274
 }
