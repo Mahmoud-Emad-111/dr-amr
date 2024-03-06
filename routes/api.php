@@ -21,6 +21,7 @@ use App\Http\Controllers\FavirateelderController;
 use App\Http\Controllers\FavirateimageController;
 use App\Http\Controllers\ImageCategoriesController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MainCategoriesBookController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Models\BooksCategories;
@@ -225,6 +226,30 @@ Route::group(['prefix'=>'/Favorite/','middleware' => 'auth:sanctum'],function(){
 
 });
 
+// Main Categories books Controller
+Route::group(['controller'=>MainCategoriesBookController::class,'prefix'=>'/Main-Categories-Books/'],function () {
+
+    // Route::post('Get-id','Get_Id');
+    Route::get('Get','Get');
+
+});
+
+//  Categories books Controller
+Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categories-Books/'],function () {
+    Route::get('Get','Get_Books_public');
+    Route::post('Find-Book-Public','GetDataId');
+});
+
+
+
+Route::group(['controller'=>BookController::class,'prefix'=>'/Books/'],function () {
+    Route::get('Get','Get_Public');
+    Route::post('Find-Book-Public','GetDataId');
+
+
+
+
+});
 
 
 

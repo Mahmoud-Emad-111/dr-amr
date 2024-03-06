@@ -5,6 +5,8 @@ use App\Http\Controllers\ArticlesCategoriesController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\AudioController;
 use App\Http\Controllers\AudiosCategoriesController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\BooksCategoriesController;
 use App\Http\Controllers\ElderController;
 use App\Http\Controllers\ImageCategoriesController;
 use App\Http\Controllers\ImageController;
@@ -123,3 +125,25 @@ Route::group(['controller' => MessageController::class, 'prefix' => '/Message/']
     Route::post('update_Message', 'update_Message');
     Route::get('get_message', 'get_message');
 });
+
+// Main Categories books Controller
+Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categories-Books/'],function () {
+    Route::post('Insert','Store');
+    Route::get('Get_Books','Get_Books');
+    Route::post('Update','Update');
+    Route::post('Delete','Delete');
+    Route::Get('Get','Get');
+
+});
+
+
+// Main Categories books Controller
+Route::group(['controller'=>BookController::class,'prefix'=>'/Books/'],function () {
+    Route::post('Insert','Store');
+    Route::get('Get','Get_Public');
+    Route::post('Update','Update');
+    Route::post('Delete','Delete');
+
+
+});
+
