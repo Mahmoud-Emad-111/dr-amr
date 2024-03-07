@@ -74,7 +74,7 @@ class ImageController extends Controller
         return imageResource::collection($data)->resolve();
     }
     public function Get_public(){
-        $data=Image::Where('status','Public');
+        $data=Image::Where('status','Public')->get();
         return imageResource::collection($data)->resolve();
     }
 

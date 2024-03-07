@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AudioRequest;
 use App\Http\Resources\AudioAllElderResource;
+use App\Http\Resources\AudioPublicResource;
 use App\Http\Resources\AudioResource;
 use App\Models\Audio;
 use App\Models\AudiosCategories;
@@ -67,7 +68,7 @@ class AudioController extends Controller
     public function Audios_public()
     {
          $data = Elder::Where('status','Approve')->get();
-        return AudioResource::collection($data)->resolve();
+        return AudioPublicResource::collection($data)->resolve();
     }
 
     public function Audios_public_id(Request $request)

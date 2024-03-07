@@ -86,33 +86,33 @@ Route::controller(ElderController::class)->prefix('/Elders/')->group(function ()
 
 });
 // PDF file Controller
-Route::controller(BookController::class)->prefix('/Books/')->group(function () {
-    // get all data Books
-    Route::get('Get',  'Get');
-    // file upload
-    // Route::post('Insert', 'store')->name('file.upload');
-    // get elder -> Book
-    Route::post('Get_data_id',  'GetDataId');
-    // get data use just id
-    Route::post('Get_data_elder_id', 'Id_Data_elder');
-    // Edit Book And Update
-    // Route::post('Edit_Book',  'Edit_Book');
-    // Route::post('Update_Book',  'Update_Book');
-    // Route::post('Delete','Delete');
+// Route::controller(BookController::class)->prefix('/Books/')->group(function () {
+//     // get all data Books
+//     Route::get('Get',  'Get');
+//     // file upload
+//     // Route::post('Insert', 'store')->name('file.upload');
+//     // get elder -> Book
+//     Route::post('Get_data_id',  'GetDataId');
+//     // get data use just id
+//     Route::post('Get_data_elder_id', 'Id_Data_elder');
+//     // Edit Book And Update
+//     // Route::post('Edit_Book',  'Edit_Book');
+//     // Route::post('Update_Book',  'Update_Book');
+//     // Route::post('Delete','Delete');
 
 
-    // this all Elders Approve data from database
+//     // this all Elders Approve data from database
 
-});
+// });
 
-Route::controller(BooksCategoriesController::class)->prefix('/Books-Categories')->group(function () {
-    // Route::post('insert','insert');
-    Route::get('Get', 'get');
-    Route::post('Get_Books', 'Get_Books');
-    // Route::post('Delete','Delete');
+// Route::controller(BooksCategoriesController::class)->prefix('/Books-Categories')->group(function () {
+//     // Route::post('insert','insert');
+//     Route::get('Get', 'get');
+//     Route::post('Get_Books', 'Get_Books');
+//     // Route::post('Delete','Delete');
 
 
-});
+// });
 
 
 Route::controller(AudiosCategoriesController::class)->prefix('/Audios-Categories/')->group(function () {

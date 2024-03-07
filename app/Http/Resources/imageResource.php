@@ -18,7 +18,7 @@ class imageResource extends JsonResource
         return [
             'id' => $this->random_id,
             'image' => asset(Storage::url($this->image)),
-            'image_categories_id' => $this->image_categories_id,
+            // 'image_categories_id' => $this->image_categories_id,
             'status'=>$this->status,
         ];
     }

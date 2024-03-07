@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class All_Audios_CategoriesResources extends JsonResource
+class AudioPublicResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,7 @@ class All_Audios_CategoriesResources extends JsonResource
      */
     public function toArray(Request $request): array
     {
-         $data=Elder::find($this->elder_id);
+        $data=Elder::with('audio')->find($this->id);
         return [
             'id' => $data->random_id,
             'name'=> $data->name,
@@ -25,6 +25,5 @@ class All_Audios_CategoriesResources extends JsonResource
             // 'phone_number'=>$data->phone_number,
             // 'Audio' => AudioResource::collection($data->whenLoaded('Audio')),
             'count_audios'=>count($data->audio),
-        ];
-    }
+        ];    }
 }
