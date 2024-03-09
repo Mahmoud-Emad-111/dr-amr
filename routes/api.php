@@ -237,6 +237,8 @@ Route::group(['controller'=>MainCategoriesBookController::class,'prefix'=>'/Main
 //  Categories books Controller
 Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categories-Books/'],function () {
     Route::get('Get','Get_Books_public');
+    Route::get('Get-Category','Get');
+
     Route::post('Find-Book-Public','GetDataId');
 });
 

@@ -67,7 +67,7 @@ class AudioController extends Controller
 
     public function Audios_public()
     {
-         $data = Elder::Where('status','Approve')->get();
+         $data = Elder::with('audio')->Where('status','Approve')->get();
         return AudioPublicResource::collection($data)->resolve();
     }
 
@@ -82,7 +82,7 @@ class AudioController extends Controller
         $ID = $this->getRealID(Audio::class, $request->id)->id;
 
         $data = Audio::where('status', 'public')->find($ID);
-        return AudioResource::collection($data)->resolve();
+        return AudioResource::make($data)->resolve();
     }
 
     // Get audios from db
