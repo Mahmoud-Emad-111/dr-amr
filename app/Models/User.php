@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function Favirate_Audios()
     {
-        return $this->belongsToMany(Audio::class,'Favirateaudios');
+        return $this->belongsToMany(Audio::class,'favirateaudios');
     }
     public function Favirate_images()
     {

@@ -16,14 +16,15 @@ class AudioPublicResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $data=Elder::with('audio')->find($this->id);
+        // $data=Elder::with('audio')->find($this->id);
         return [
-            'id' => $data->random_id,
-            'name'=> $data->name,
-            'image'=> asset(Storage::url($data->image)),
-            // 'email'=> $data->email,
-            // 'phone_number'=>$data->phone_number,
-            // 'Audio' => AudioResource::collection($data->whenLoaded('Audio')),
-            'count_audios'=>count($data->audio),
-        ];    }
+            'id' => $this->random_id,
+            'name'=> $this->name,
+            'image'=> asset(Storage::url($this->image)),
+            // 'email'=> $this->email,
+            // 'phone_number'=>$this->phone_number,
+            // 'Audio' => AudioResource::collection($this->whenLoaded('Audio')),
+            'count_audios'=>count($this->audio),
+        ];
+    }
 }

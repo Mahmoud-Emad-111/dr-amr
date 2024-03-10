@@ -43,6 +43,7 @@ class BookController extends Controller
               'file' => $file,
               'image' => $image,
               'status' => $request->status,
+              'tag_name' => $request->tag_name,
               'books_categories_id' => $books_categories_id,
               'random_id'=>$this->RandomID(),
 
@@ -50,6 +51,35 @@ class BookController extends Controller
 
 
           return $this->handelResponse('','The book has been added successfully');
+      }
+      ############## store tag Books ########################
+      public function storeTag(Request $request)
+      {
+          $validate = Validator::make($request->all(), [
+              'id'=> 'required|integer|exists:books,random_id',
+              'tag_name' => 'required',
+          ]);
+
+          if ($validate->fails()) {
+              return response()->json($validate->errors());
+          }
+
+          $ID = $this->getRealID(Book::class, $request->id)->id;
+
+          // Fetch the existing tag_name value
+          $existingAudio = Book::findOrFail($ID);
+          $existingTagName = $existingAudio->tag_name;
+
+          // Merge the new values with the existing array
+          $newTagName =$existingTagName.' '.$request->tag_name;
+
+          // Update the existing record with the updated 'tag_name'
+          $existingAudio->update([
+              'tag_name' => $newTagName,
+          ]);
+
+
+          return $this->handelResponse('', 'The tag_name has been added successfully');
       }
       ############## Get public Books ########################33
       public function Get_Public(){
@@ -74,24 +104,6 @@ class BookController extends Controller
 
       }
 
-
-      // //   Edit books and Update
-
-      // public function Edit_Book(Request $request)
-      // {
-      //     $validate=Validator::make($request->all(),[
-      //         'id'=> 'required|integer|exists:books,id',
-      //     ]);
-
-      //     if($validate->fails()){
-      //         return response()->json($validate->errors());
-      //     }
-      //     $ID=$this->getRealID(Book::class, $request->id);
-      //     $data_id = Book::find($ID);
-      //     return IdBookResource::make($data_id);
-
-      // }
-     // Update Book
       public function Update(books_Updated_Request $request)
       {
           $ID=$this->getRealID(Book::class, $request->id);
@@ -126,6 +138,8 @@ class BookController extends Controller
               'file' => $file,
               'image' => $image,
               'status' => $request->status,
+              'tag_name' => $request->tag_name,
+
           ]);
 
           return $this->handelResponse('','The book has been update successfully');
@@ -155,6 +169,12 @@ class BookController extends Controller
 
       return $this->handelResponse('','The book  has been Deleted successfully');
 
+    }
+    public function LatestVersionBooks()
+    {
+        $latestBooks = Book::orderBy('created_at', 'desc')->take(5)->get();
+
+        return FileBookResoure::collection($latestBooks)->resolve();
     }
 }
 

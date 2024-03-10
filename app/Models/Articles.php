@@ -17,8 +17,13 @@ class Articles extends Model
         'elder_id',
         'random_id',
         'articles_categories_id',
-        'status'
+        'status',
+        'tag_name',
+        'visit count',
     ];
+    // protected $casts = [
+    //     'tag_name' => 'array',
+    // ];
     // this  hidden data
     protected $hidden =[
         'created_at',

@@ -25,6 +25,8 @@ class ArticlesRequest extends FormRequest
             'title' => 'required',
             'image' =>  'required|image',
             'content'=>'required',
+            'tag_name'=>'array',
+
             'elder_id' => 'required|exists:elders,random_id',
         ];
     }

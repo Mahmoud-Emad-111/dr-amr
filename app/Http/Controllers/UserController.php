@@ -12,6 +12,7 @@ use App\Http\Resources\IdBookResource;
 use App\Http\Resources\ImagefavirateUserResource;
 use App\Http\Resources\imageResource;
 use App\Http\Resources\userCommentResource;
+use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\Audio;
 use App\Models\Comment;
@@ -123,6 +124,11 @@ class UserController extends Controller
         auth()->user()->currentAccessToken()->delete();
         auth()->logout();
         return response(['success' => true, 'massega'=>'user logged out']);
-       }
-
     }
+
+
+    public function ProfileUSer()
+    {
+        return new UserProfileResource(auth('sanctum')->user());
+    }
+}

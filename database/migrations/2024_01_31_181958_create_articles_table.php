@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('random_id');
             $table->string('title');
-
+            $table->longText('tag_name')->nullable();
             $table->string('image');
             $table->string('content');
             $table->foreignId('elder_id')->constrained()->onDelete('cascade');
             $table->foreignId('articles_categories_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('visit_count')->default(0);
             $table->enum('status',['Public','Private'])->default('Private');
             $table->timestamps();
         });

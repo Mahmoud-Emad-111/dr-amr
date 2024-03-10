@@ -25,12 +25,13 @@ class ElderController extends Controller{
         // handle image create
         $image = $this->saveImage($request->file('image'), 'elders_images');
 
-        //    create db data -> books
+ //    create db data -> books
         Elder::create([
             'name' => $request->name,
             'image' => $image,
             'email' =>$request->email,
             'phone_number'=>$request->phone,
+            'tag' =>$request->tag,
             'random_id'=>$this->RandomID(),
             'status'=>$request->status,
         ]);
@@ -38,7 +39,32 @@ class ElderController extends Controller{
     }
 
 
+    public function storeTag(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
+            'tag_name' => 'required',
+        ]);
 
+        if ($validate->fails()) {
+            return response()->json($validate->errors());
+        }
+
+        $ID = $this->getRealID(Elder::class, $request->id)->id;
+
+        // Fetch the existing tag_name value
+        $existingAudio = Elder::findOrFail($ID);
+        $existingTagName = $existingAudio->tag;
+         $tags=$request->tag_name.' '.$existingTagName;
+
+        // Update the existing record with the updated 'tag_name'
+        $existingAudio->update([
+            'tag' => $tags,
+        ]);
+
+
+        return $this->handelResponse('', 'The tag_name has been added successfully');
+    }
     //  all Elders data from database
     public function Get(){
 
@@ -113,6 +139,7 @@ class ElderController extends Controller{
             'name' => 'required|string|max:255',
             'image' => 'image',
             'email' => 'required|email',
+            'tag_name' =>'array',
             'phone' => 'required|max:12',
             'status'=>'required|in:Pending,Approve',
 
@@ -145,6 +172,7 @@ class ElderController extends Controller{
             'name' => $request->name,
             'image' => $image,
             'email' =>$request->email,
+            'tag_name' => $request->tag_name,
             'phone_number'=>$request->phone,
             'status'=>$request->status,
         ]);

@@ -22,6 +22,8 @@ Route::controller(ElderController::class)->prefix('/Elders/')->group(function ()
     Route::post('Insert',  'store');
     // this all Elders data from database
     Route::get('Get', 'Get');
+        //store tag
+    Route::post('storeTag', 'storeTag');
     // get data use just id
     Route::post('Get_data_elder_id', 'Id_Data_elder');
     // Elder Update
@@ -56,8 +58,11 @@ Route::controller(AudiosCategoriesController::class)->prefix('/Audios-Categories
 Route::controller(AudioController::class)->prefix('/Audios/')->group(function () {
     // this create data with database
     Route::post('insert', 'store');
+        //store tag
+        Route::post('storeTag', 'storeTag');
     // get all audio from DB
     Route::get('Get', 'Get_audio');
+
     // this get id Audio -> details Elder
     Route::post('Get_id', 'Get_id');
     // update-
@@ -76,6 +81,8 @@ Route::group(['controller' => AdminController::class, 'prefix' => '/admin/'], fu
 // Imagecategory Controller
 Route::group(['controller' => ImageCategoriesController::class, 'prefix' => '/ImagesCategories/'], function () {
     Route::post('Insert', 'Store');
+        //store tag
+    Route::post('storeTag', 'storeTag');
     Route::get('Get', 'Get');
     Route::post('Update', 'Update');
 });
@@ -86,7 +93,6 @@ Route::group(['controller' => ImageController::class, 'prefix' => '/Images/'], f
     Route::post('Insert', 'Store');
     Route::post('Update', 'Update');
     Route::post('Delete', 'Delete');
-
     // Route::post('Get-images-from-category','Get_data_from_Images');
     Route::get('Get', 'Get');
 });
@@ -104,6 +110,7 @@ Route::group(['controller' => ArticlesCategoriesController::class, 'prefix' => '
 // Articles Categories Controller
 Route::group(['controller' => ArticlesController::class, 'prefix' => '/Articles/'], function () {
     Route::post('Insert', 'Store');
+    Route::post('storeTag', 'storeTag');
     Route::post('Update', 'Update');
     Route::post('Delete', 'Delete');
     Route::post('Get-id', 'Get_Id');
@@ -140,10 +147,10 @@ Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categor
 // Main Categories books Controller
 Route::group(['controller'=>BookController::class,'prefix'=>'/Books/'],function () {
     Route::post('Insert','Store');
+    Route::post('storeTag', 'storeTag');
     Route::get('Get','Get_Public');
     Route::post('Update','Update');
     Route::post('Delete','Delete');
-
 
 });
 

@@ -16,7 +16,11 @@ class Elder extends Model
         'phone_number',
         'random_id',
         'status',
+        'tag'
 ];
+// protected $casts = [
+//     'tag_name' => 'array',
+// ];
 // Book
     public function books(){
         return $this->hasMany(Book::class);

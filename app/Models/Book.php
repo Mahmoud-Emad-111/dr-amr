@@ -16,9 +16,13 @@ class Book extends Model
         'file',
         'image',
         'books_categories_id',
-        'status'
+        'status',
+        'tag_name'
 
     ];
+    // protected $casts = [
+    //     'tag_name' => 'array',
+    // ];
     public function Category(){
         return $this->belongsTo(BooksCategories::class);
     }

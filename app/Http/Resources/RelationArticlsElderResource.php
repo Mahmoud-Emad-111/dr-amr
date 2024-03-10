@@ -20,6 +20,7 @@ class RelationArticlsElderResource extends JsonResource
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
             'content' => $this->title,
+            'visit_count'=>$this->visit_count,
             'elder'=>[
                 'id'=>$this->elder->random_id,
                 'name'=>$this->elder->name,

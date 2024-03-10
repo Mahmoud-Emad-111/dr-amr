@@ -23,6 +23,7 @@ use App\Http\Controllers\ImageCategoriesController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MainCategoriesBookController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\SeacrchController;
 use App\Http\Controllers\UserController;
 use App\Models\BooksCategories;
 use App\Models\downloaded;
@@ -40,15 +41,16 @@ use App\Models\downloaded;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::controller(UserController::class)->prefix('/user/')->group(function () {
-        Route::get('get_all', 'get_user_all');
-        Route::post('get_id', 'get_id');
-        Route::post('Get_id_favirate_audio/{id}', 'Get_id_favirate_audio');
-        Route::post('Get_id_favirate_image/{id}', 'Get_id_favirate_image');
-        Route::post('Get_id_favirate_Books/{id}', 'Get_id_favirate_Books');
-        Route::post('Get_id_favirate_ELder/{id}', 'Get_id_favirate_ELder');
+        // Route::get('get_all', 'get_user_all');
+        // Route::post('get_id', 'get_id');
+        // Route::post('Get_id_favirate_audio/{id}', 'Get_id_favirate_audio');
+        // Route::post('Get_id_favirate_image/{id}', 'Get_id_favirate_image');
+        // Route::post('Get_id_favirate_Books/{id}', 'Get_id_favirate_Books');
+        // Route::post('Get_id_favirate_ELder/{id}', 'Get_id_favirate_ELder');
 
+        Route::get('Profile', 'ProfileUSer');
 
-        Route::get('logout', 'logout');
+        Route::get('Logout', 'logout');
     });
 });
 
@@ -85,34 +87,6 @@ Route::controller(ElderController::class)->prefix('/Elders/')->group(function ()
 
 
 });
-// PDF file Controller
-// Route::controller(BookController::class)->prefix('/Books/')->group(function () {
-//     // get all data Books
-//     Route::get('Get',  'Get');
-//     // file upload
-//     // Route::post('Insert', 'store')->name('file.upload');
-//     // get elder -> Book
-//     Route::post('Get_data_id',  'GetDataId');
-//     // get data use just id
-//     Route::post('Get_data_elder_id', 'Id_Data_elder');
-//     // Edit Book And Update
-//     // Route::post('Edit_Book',  'Edit_Book');
-//     // Route::post('Update_Book',  'Update_Book');
-//     // Route::post('Delete','Delete');
-
-
-//     // this all Elders Approve data from database
-
-// });
-
-// Route::controller(BooksCategoriesController::class)->prefix('/Books-Categories')->group(function () {
-//     // Route::post('insert','insert');
-//     Route::get('Get', 'get');
-//     Route::post('Get_Books', 'Get_Books');
-//     // Route::post('Delete','Delete');
-
-
-// });
 
 
 Route::controller(AudiosCategoriesController::class)->prefix('/Audios-Categories/')->group(function () {
@@ -131,6 +105,7 @@ Route::controller(AudioController::class)->prefix('/Audios/')->group(function ()
     // // get all audio from DB
     Route::post('Get_id', 'Get_id');
 
+    Route::Get('MostListened', 'MostListened');
     Route::Get('Get', 'Audios_public');
     Route::post('Audios_public_id', 'Audios_public_id');
 });
@@ -231,28 +206,27 @@ Route::group(['controller'=>MainCategoriesBookController::class,'prefix'=>'/Main
 
     // Route::post('Get-id','Get_Id');
     Route::get('Get','Get');
-
 });
-
-//  Categories books Controller
+//Categories books Controller
 Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categories-Books/'],function () {
     Route::get('Get','Get_Books_public');
     Route::post('Find-Book-Public','GetDataId');
+    Route::get('Get-Category','Get');
 });
-
-
-
 Route::group(['controller'=>BookController::class,'prefix'=>'/Books/'],function () {
     Route::get('Get','Get_Public');
+    Route::get('LatestVersionBooks','LatestVersionBooks');
+
     Route::post('Find-Book-Public','GetDataId');
-
-
-
-
+});
+// handle search
+Route::controller(SeacrchController::class)->prefix('/Search/')->group(function () {
+    Route::post('search_audio','search_audio');
+    Route::post('search_imagecategory','search_imagecategory');
+    Route::post('search_elder','search_elder');
+    Route::post('search_articles','search_articles');
+    Route::post('search_Book','search_Book');
 });
 
 
 
-
-
-// Favirate

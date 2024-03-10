@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('file');
             $table->string('image');
             $table->enum('status', ['public','private'])->default('public');
+            $table->longText('tag_name')->nullable();
             $table->timestamps();
             $table->foreignId('books_categories_id')->constrained()->onDelete('cascade');
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('elder_id')->constrained()->onDelete('cascade');
             $table->foreignId('audios_categories_id')->constrained()->onDelete('cascade');
             $table->bigInteger('visits_count')->default(0); // افتراضياً تكون القيمة صفر
+            $table->longText('tag_name')->nullable();
             $table->timestamps();
         });
     }

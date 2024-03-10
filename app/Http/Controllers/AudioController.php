@@ -38,12 +38,50 @@ class AudioController extends Controller
             'audio' => $audio,
             'status' => $request->status,
             'elder_id' => $elder_id,
+            'tag_name' => $request->tag_name,
             'audios_categories_id' => $category_id,
             'random_id' => $this->RandomID(),
             'visits_count' => 0, // تعيين قيمة الزيارات الافتراضية إلى صفر عند الإنشاء
         ]);
         return $this->handelResponse('', 'The Audio has been added successfully');
     }
+
+
+
+
+    public function storeTag(Request $request)
+    {
+
+
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:audios,random_id',
+            'tag_name' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors());
+        }
+
+        $ID = $this->getRealID(Audio::class, $request->id)->id;
+
+        // Fetch the existing tag_name value
+        $existingAudio = Audio::findOrFail($ID);
+        $existingTagName = $existingAudio->tag_name;
+
+        // Merge the new values with the existing array
+        $newTagName = $existingTagName.' '.$request->tag_name;
+
+        // Update the existing record with the updated 'tag_name'
+        $existingAudio->update([
+            'tag_name' => $newTagName,
+        ]);
+
+
+        return $this->handelResponse('', 'The tag_name has been added successfully');
+    }
+
+
+
 
     public function store_visit(Request $request)
     {
@@ -64,10 +102,9 @@ class AudioController extends Controller
 
 
 
-
     public function Audios_public()
     {
-         $data = Elder::Where('status','Approve')->get();
+         $data = Elder::with('audio')->Where('status','Approve')->get();
         return AudioPublicResource::collection($data)->resolve();
     }
 
@@ -82,7 +119,7 @@ class AudioController extends Controller
         $ID = $this->getRealID(Audio::class, $request->id)->id;
 
         $data = Audio::where('status', 'public')->find($ID);
-        return AudioResource::collection($data)->resolve();
+        return AudioResource::make($data)->resolve();
     }
 
     // Get audios from db
@@ -126,8 +163,9 @@ class AudioController extends Controller
             'id' => 'required|integer|exists:audios,random_id',
             'image' => 'image|max:2048',
             'audio' => 'mimes:mp3,wav',
-            'status' => 'required|in:public,private',
-            'title' => 'required',
+            'status' => 'in:public,private',
+            // 'title' => '',
+            'tag_name'=>'required|array',
             'Audio_category' => 'required|integer|exists:audios_categories,id'
         ]);
         if ($validate->fails()) {
@@ -162,6 +200,7 @@ class AudioController extends Controller
             'audio' => $audio_file,
             'status' => $request->status,
             'title' => $request->title,
+            'tag_name' => $request->tag_name, // Wrap the tag in an array and encode to JSON
             'audios_categories' => $request->Audio_category,
 
         ]);
@@ -194,5 +233,13 @@ class AudioController extends Controller
 
 
         return $this->handelResponse('', 'The Audio  has been Deleted successfully');
+    }
+
+    public function MostListened()
+    {
+        // Func Latest Version Books
+        $MostListened = Audio::orderBy('visits_count', 'desc')->take(3)->get();
+
+        return AudioResource::collection($MostListened)->resolve();
     }
 }

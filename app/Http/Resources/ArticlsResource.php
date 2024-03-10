@@ -21,7 +21,9 @@ class ArticlsResource extends JsonResource
             'id' => $this->random_id,
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
-            'content' => $this->title,
+            'visit_count'=>$this->visit_count,
+
+            // 'content' => $this->title,
 
             // 'elder_id'=> $this->elder_id
         ];

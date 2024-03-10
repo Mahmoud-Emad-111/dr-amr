@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('email')->unique();
             $table->enum('status', ['Approve', 'Pending'])->default('Pending');
-
+            $table->longText('tag')->nullable();
             $table->string('phone_number',12)->unique();
             $table->timestamps();
         });

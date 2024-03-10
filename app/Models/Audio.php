@@ -19,9 +19,13 @@ class Audio extends Model
         'audios_categories_id',
         'random_id',
         'visits_count',
+        'tag_name'
 
 
     ];
+    // protected $casts = [
+    //     'tag_name' => 'array',
+    // ];
     // this  hidden data
     protected $hidden = [
         'created_at',

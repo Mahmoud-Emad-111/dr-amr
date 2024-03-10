@@ -26,6 +26,7 @@ class books_Updated_Request extends FormRequest
             'name' => 'required|string|max:255',
             'file' => 'required|mimes:pdf',
             'image' => 'required|image',
+            'tag_name'=>'array',
             'status' => 'required|in:Public,Private',
         ];
     }
