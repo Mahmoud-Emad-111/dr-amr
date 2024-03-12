@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class FavirateBookController extends Controller
 {
     use RandomIDTrait;
+    
     public  function FavirateBook(Request $request)
     {
         $validate = Validator::make($request->all(), [

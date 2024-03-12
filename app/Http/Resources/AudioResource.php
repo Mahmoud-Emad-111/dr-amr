@@ -16,6 +16,7 @@ class AudioResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+<<<<<<< Updated upstream
         $data=Elder::with('audio')->find($this->id);
         return [
             'id' => $data->id,
@@ -25,6 +26,28 @@ class AudioResource extends JsonResource
             'phone_number'=>$data->phone_number,
             // 'Audio' => AudioResource::collection($data->whenLoaded('Audio')),
             'count_audios'=>count($data->audio),
+=======
+        // $data=Elder::with('audio')->find($this->id);
+        // return [
+        //     'id' => $data->random_id,
+        //     'name'=> $data->name,
+        //     'image'=> asset(Storage::url($data->image)),
+        //     // 'email'=> $data->email,
+        //     // 'phone_number'=>$data->phone_number,
+        //     // 'Audio' => AudioResource::collection($data->whenLoaded('Audio')),
+        //     'count_audios'=>count($data->audio),
+        // ];
+        return [
+            'id' => $this->random_id,
+            'title' => $this->title,
+            'image' => asset(Storage::url($this->image)),
+            'audio' => asset(Storage::url($this->audio)),
+            'status' => $this->status,
+            'elder' => [
+                'name' => $this->elder->name,
+                'image' => asset(Storage::url($this->elder->image)),
+            ],
+>>>>>>> Stashed changes
         ];
     }
 }
