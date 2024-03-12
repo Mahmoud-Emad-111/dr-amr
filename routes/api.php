@@ -151,7 +151,7 @@ Route::group(['controller' => MessageController::class, 'prefix' => '/Message/']
 
 
 
-Route::group(['prefix'=>'/download','middleware' => 'auth:sanctum'],function(){
+Route::group(['prefix' => '/download', 'middleware' => 'auth:sanctum'], function () {
 
     Route::group(['controller' => DownloadAudioController::class], function () {
         Route::post('Donwload-Audio', 'Donwload');
@@ -170,14 +170,12 @@ Route::group(['prefix'=>'/download','middleware' => 'auth:sanctum'],function(){
         Route::post('Download-Elder', 'DownloadElder');
         Route::get('getElder', 'getElder');
     });
-
-
 });
 
-Route::group(['prefix'=>'/Favorite/','middleware' => 'auth:sanctum'],function(){
+Route::group(['prefix' => '/Favorite/', 'middleware' => 'auth:sanctum'], function () {
     Route::controller(FavirateelderController::class)->group(function () {
         Route::post('Favorite-Elder', 'favirateElder');
-        Route::get('Get_Favorite_Elder','Get_Favirate_Elder');
+        Route::get('Get_Favorite_Elder', 'Get_Favirate_Elder');
     });
 
     Route::controller(FavirateimageController::class)->group(function () {
@@ -189,46 +187,39 @@ Route::group(['prefix'=>'/Favorite/','middleware' => 'auth:sanctum'],function(){
     Route::controller(FavirateBookController::class)->group(function () {
         Route::post('Favorite-Book', 'FavirateBook');
         Route::get('Get_Favorite_Books', 'Get_Favirate_Books');
-
     });
 
     Route::controller(FavirateAudioController::class)->group(function () {
         Route::post('Favorite-Audio', 'FavirateAudio');
         Route::get('Get_Favorite_Audios', 'Get_Favirate_Audios');
-
     });
-
-
 });
 
 // Main Categories books Controller
-Route::group(['controller'=>MainCategoriesBookController::class,'prefix'=>'/Main-Categories-Books/'],function () {
+Route::group(['controller' => MainCategoriesBookController::class, 'prefix' => '/Main-Categories-Books/'], function () {
 
     // Route::post('Get-id','Get_Id');
-    Route::get('Get','Get');
+    Route::get('Get', 'Get');
 });
 //Categories books Controller
-Route::group(['controller'=>BooksCategoriesController::class,'prefix'=>'/Categories-Books/'],function () {
-    Route::get('Get','Get_Books_public');
-    Route::get('Get-Category','Get');
+Route::group(['controller' => BooksCategoriesController::class, 'prefix' => '/Categories-Books/'], function () {
+    Route::get('Get', 'Get_Books_public');
+    Route::get('Get-Category', 'Get');
 
-    Route::post('Find-Book-Public','GetDataId');
-    Route::get('Get-Category','Get');
+    Route::post('Find-Book-Public', 'GetDataId');
+    Route::get('Get-Category', 'Get');
 });
-Route::group(['controller'=>BookController::class,'prefix'=>'/Books/'],function () {
-    Route::get('Get','Get_Public');
-    Route::get('LatestVersionBooks','LatestVersionBooks');
+Route::group(['controller' => BookController::class, 'prefix' => '/Books/'], function () {
+    Route::get('Get', 'Get_Public');
+    Route::get('LatestVersionBooks', 'LatestVersionBooks');
 
-    Route::post('Find-Book-Public','GetDataId');
+    Route::post('Find-Book-Public', 'GetDataId');
 });
 // handle search
 Route::controller(SeacrchController::class)->prefix('/Search/')->group(function () {
-    Route::post('search_audio','search_audio');
-    Route::post('search_imagecategory','search_imagecategory');
-    Route::post('search_elder','search_elder');
-    Route::post('search_articles','search_articles');
-    Route::post('search_Book','search_Book');
+    Route::post('search_audio', 'search_audio');
+    Route::post('search_imagecategory', 'search_imagecategory');
+    Route::post('search_elder', 'search_elder');
+    Route::post('search_articles', 'search_articles');
+    Route::post('search_Book', 'search_Book');
 });
-
-
-

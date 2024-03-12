@@ -16,7 +16,7 @@ class AudioResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // $data=Elder::with('audio')->find($this->id);
+        $data=Elder::with('audio')->find($this->id);
         // return [
         //     'id' => $data->random_id,
         //     'name'=> $data->name,
@@ -31,13 +31,12 @@ class AudioResource extends JsonResource
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
             'audio' => asset(Storage::url($this->audio)),
-            'status'=> $this->status,
-            // 'elder'=>[
-            //     'name'=>$this->elder->name,
-            //     'image'=> asset(Storage::url($this->elder->image)),
-            //     'audio'=> asset(Storage::url($this->audio)),
-            // ],
+            'status' => $this->status,
+            'elder' => [
+                'name' => $this->elder->name,
+                'image' => asset(Storage::url($this->elder->image)),
+                'audio' => asset(Storage::url($this->audio)),
+            ],
         ];
     }
 }
-

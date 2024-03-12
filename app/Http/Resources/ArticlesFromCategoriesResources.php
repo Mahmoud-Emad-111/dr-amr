@@ -15,11 +15,13 @@ class ArticlesFromCategoriesResources extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return[
+        return [
             'id' => $this->random_id,
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
             'content' => $this->title,
+            'created_at' => $this->created_at,
+            'visit_count' => $this->visit_count,
 
         ];
     }

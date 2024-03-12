@@ -16,11 +16,16 @@ class AudiofavirateUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=>$this->random_id,
-            "title"=>$this->title,
-            "image"=>asset(Storage::url($this->image)),
-            "audio"=>asset(Storage::url($this->audio)),
-            "status"=>$this->status,
+            "id" => $this->random_id,
+            "title" => $this->title,
+            "image" => asset(Storage::url($this->image)),
+            "audio" => asset(Storage::url($this->audio)),
+            "status" => $this->status,
+            'elder' => [
+                'name' => $this->elder->name,
+                'image' => asset(Storage::url($this->elder->image)),
+                'audio' => asset(Storage::url($this->audio)),
+            ],
         ];
     }
 }

@@ -15,8 +15,9 @@ class ArticlesCategoriesResources extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=>$this->random_id,
-            'title'=>$this->title,
+            'id' => $this->random_id,
+            'title' => $this->title,
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -22,6 +22,7 @@ class ArticlsResource extends JsonResource
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
             'visit_count'=>$this->visit_count,
+            'created_at'=>$this->created_at,    
 
             // 'content' => $this->title,
 
