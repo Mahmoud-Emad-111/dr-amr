@@ -112,7 +112,7 @@ class ArticlesController extends Controller
         $id = $this->getRealID(Articles::class, $request->id)->id;
         $data = Articles::with('elder')->Where('status', 'public')->find($id);
         if ($data == '') {
-            return $this->handelError('You do not have permission to access this content');
+            return $this->handelError('Data Is Empty');
         } else {
             $articles = Articles::findOrFail($id);
 

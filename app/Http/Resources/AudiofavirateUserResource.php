@@ -24,7 +24,7 @@ class AudiofavirateUserResource extends JsonResource
             'elder' => [
                 'name' => $this->elder->name,
                 'image' => asset(Storage::url($this->elder->image)),
-                'audio' => asset(Storage::url($this->audio)),
+                // 'audio' => asset(Storage::url($this->audio)),
             ],
         ];
     }

@@ -17,7 +17,6 @@ class ArticlesCategoriesResources extends JsonResource
         return [
             'id' => $this->random_id,
             'title' => $this->title,
-            'created_at' => $this->created_at,
         ];
     }
 }

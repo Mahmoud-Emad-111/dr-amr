@@ -19,7 +19,7 @@ class Articles extends Model
         'articles_categories_id',
         'status',
         'tag_name',
-        'visit count',
+        'visit_count',
     ];
     // protected $casts = [
     //     'tag_name' => 'array',

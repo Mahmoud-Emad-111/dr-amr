@@ -43,7 +43,7 @@ class UserController extends Controller
         ]);
         $response['token'] = $user->createToken($user->email)->plainTextToken;
         $response['email'] = $user->email;
-        return $this->handelResponse($response,'register successfully');
+        return $this->handelResponse($response, 'register successfully');
     }
     // create Login USer
     public function Login(Request $request)
@@ -61,7 +61,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'token' => $user->createToken($user->email)->plainTextToken,
             ];
-            return $this->handelResponse($response,'register successfully');
+            return $this->handelResponse($response, 'register successfully');
         } else {
             return response()->json(['error' => 'unauthorised']);
         }
@@ -70,17 +70,17 @@ class UserController extends Controller
     // get user id
     public function get_id(Request $request)
     {
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:users',
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:users',
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $ID=$this->getRealID(User::class, $request->id);
+        $ID = $this->getRealID(User::class, $request->id);
         $data =  User::findOrFail($ID);
 
-      return UserResource::make($data[0])->resolve();
+        return UserResource::make($data[0])->resolve();
     }
     //getAll User
     public function get_user_all()
@@ -90,45 +90,64 @@ class UserController extends Controller
     }
 
 
-    public function Get_id_favirate_audio($id){
+    public function Get_id_favirate_audio($id)
+    {
 
         $get_id = User::with('Audios')->find($id);
 
         return AudiofavirateUserResource::collection($get_id->audio)->resolve();
-
     }
 
-    public function Get_id_favirate_image($id){
+    public function Get_id_favirate_image($id)
+    {
 
-         $get_id = User::with('images')->find($id);
+        $get_id = User::with('images')->find($id);
 
         return imageResource::collection($get_id->image)->resolve();
-
     }
 
-     public function Get_id_favirate_Books($id){
+    public function Get_id_favirate_Books($id)
+    {
 
-         $get_id = User::with('books')->find($id);
+        $get_id = User::with('books')->find($id);
 
         return IdBookResource::collection($get_id->image)->resolve();
-
     }
-     public function Get_id_favirate_ELder($id){
+    public function Get_id_favirate_ELder($id)
+    {
 
-         $get_id = User::with('elders')->find($id);
+        $get_id = User::with('elders')->find($id);
 
         return ElderResource::collection($get_id->image)->resolve();
-
     }
-    public function logout(){
+    public function logout()
+    {
         auth()->user()->currentAccessToken()->delete();
         auth()->logout();
-        return response(['success' => true, 'massega'=>'user logged out']);
+        return response(['success' => true, 'massega' => 'user logged out']);
     }
 
 
     public function ProfileUSer()
     {
         return new UserProfileResource(auth('sanctum')->user());
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:users',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors());
+        }
+
+        $userId = $request->id;
+
+        $user = User::findOrFail($userId);
+        $user->delete();
+
+        return response()->json(['message' => 'The account has been successfully deleted'], 200);
     }
 }

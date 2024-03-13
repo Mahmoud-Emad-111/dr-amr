@@ -6,6 +6,7 @@ use App\Http\Requests\AudioRequest;
 use App\Http\Resources\AudioAllElderResource;
 use App\Http\Resources\AudioPublicResource;
 use App\Http\Resources\AudioResource;
+use App\Http\Resources\MostListenedsource;
 use App\Models\Audio;
 use App\Models\AudiosCategories;
 use App\Models\Elder;
@@ -69,7 +70,7 @@ class AudioController extends Controller
         $existingTagName = $existingAudio->tag_name;
 
         // Merge the new values with the existing array
-        $newTagName = $existingTagName.' '.$request->tag_name;
+        $newTagName = $existingTagName . ' ' . $request->tag_name;
 
         // Update the existing record with the updated 'tag_name'
         $existingAudio->update([
@@ -104,7 +105,7 @@ class AudioController extends Controller
 
     public function Audios_public()
     {
-         $data = Elder::with('audio')->Where('status','Approve')->get();
+        $data = Elder::with('audio')->Where('status', 'Approve')->get();
         return AudioPublicResource::collection($data)->resolve();
     }
 
@@ -165,7 +166,7 @@ class AudioController extends Controller
             'audio' => 'mimes:mp3,wav',
             'status' => 'in:public,private',
             // 'title' => '',
-            'tag_name'=>'required|array',
+            'tag_name' => 'required|array',
             'Audio_category' => 'required|integer|exists:audios_categories,id'
         ]);
         if ($validate->fails()) {
@@ -237,9 +238,9 @@ class AudioController extends Controller
 
     public function MostListened()
     {
-        // Func Latest Version Books
+        // Func Latest Version Audio
         $MostListened = Audio::orderBy('visits_count', 'desc')->take(3)->get();
 
-        return AudioResource::collection($MostListened)->resolve();
+        return MostListenedsource::collection($MostListened)->resolve();
     }
 }

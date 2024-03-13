@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-
-class ArticlsResource extends JsonResource
+class MostListenedsource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,16 +16,10 @@ class ArticlsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-
             'id' => $this->random_id,
             'title' => $this->title,
             'image' => asset(Storage::url($this->image)),
-            'visit_count' => $this->visit_count,
-            'created_at' => $this->created_at->format('Y-m-d'),
-
-            // 'content' => $this->title,
-
-            // 'elder_id'=> $this->elder_id
+            'audio' => asset(Storage::url($this->audio)),
         ];
     }
 }

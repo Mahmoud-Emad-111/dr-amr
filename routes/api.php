@@ -51,6 +51,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('Profile', 'ProfileUSer');
 
         Route::get('Logout', 'logout');
+
+        Route::get('delete-account', 'deleteAccount');
     });
 });
 
