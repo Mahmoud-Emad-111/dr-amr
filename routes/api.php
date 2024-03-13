@@ -101,7 +101,7 @@ Route::controller(AudiosCategoriesController::class)->prefix('/Audios-Categories
 
 // Audio Controller
 Route::controller(AudioController::class)->prefix('/Audios/')->group(function () {
-    // // this create data with database
+    // this create data with database
     Route::post('insert', 'store');
     Route::post('Increase-listening', 'store_visit');
     // // get all audio from DB
