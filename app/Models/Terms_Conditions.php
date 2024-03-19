@@ -12,5 +12,7 @@ class Terms_Conditions extends Model
     protected $fillable = [
         'text',
         'country',
+        'text_en',
+        'country_en',
     ];
 }

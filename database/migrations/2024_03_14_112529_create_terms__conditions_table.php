@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->longText('text');
             $table->string('country');
+            $table->longText('text_en');
+            $table->string('country_en');
             $table->timestamps();
         });
     }

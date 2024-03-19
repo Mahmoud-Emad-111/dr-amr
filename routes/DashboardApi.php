@@ -174,7 +174,7 @@ Route::group(['controller' => TermsConditionsController::class, 'prefix' => '/Te
     Route::post('create_terms_conditions', 'create_terms_conditions');
     Route::post('updateTerm', 'updateTerm');
     Route::get('getTermById', 'getTermById');
-    Route::get('deleteTerm', 'deleteTerm');
+    Route::delete('deleteTerm', 'deleteTerm');
 
 });
 

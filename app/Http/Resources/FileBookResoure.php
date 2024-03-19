@@ -15,13 +15,21 @@ class FileBookResoure extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->random_id,
             'name' => $this->name,
             'image' => asset(Storage::url($this->image)),
-            'Book' => asset(Storage::url($this->file)),
             'status' => $this->status,
             'elder' => BookElderResource::collection($this->whenLoaded('elder')),
         ];
+
+        // Check if the user is authenticated
+        if (auth()->check()) {
+            // If authenticated, include the 'Book' field
+            $isFav = $this->isFav !== null;
+            $data['Book'] = $isFav ? 'isFav' : 'NotFav';
+        }
+
+        return $data;
     }
 }
