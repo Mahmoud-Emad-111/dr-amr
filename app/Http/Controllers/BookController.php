@@ -88,15 +88,18 @@ class BookController extends Controller
     public function Get_Public()
     {
         // التحقق من المصادقة
-        if (auth('sanctum')->check()) {
-            $user_id = auth('sanctum')->user()->id;
 
-            $publicBooks = Book::where('status', 'Public')
-                ->select('books.*', 'faviratebooks.book_id as isFav')
-                ->leftJoin('faviratebooks', function ($join) use ($user_id) {
-                    $join->on('books.id', '=', 'faviratebooks.book_id')
-                        ->where('faviratebooks.user_id', '=', $user_id);
-                })->get();
+        if (auth('sanctum')->check()) {
+
+        $user_id = auth('sanctum')->user()->id;
+
+        $publicBooks = Book::where('status', 'Public')
+            ->select('books.*', 'faviratebooks.book_id as isFav')
+            ->leftJoin('faviratebooks', function ($join) use ($user_id) {
+                $join->on('books.id', '=', 'faviratebooks.book_id')
+                    ->where('faviratebooks.user_id', '=', $user_id);
+            })->get();
+
         } else {
             // إذا لم يكن المستخدم مصادقًا، يمكنك استرداد الكتب العامة دون بيانات المفضلة
             $publicBooks = Book::where('status', 'Public')->get();
