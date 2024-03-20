@@ -79,7 +79,6 @@ class ArticlesCategoriesController extends Controller
         ]);
         return  $this->handelResponse('','The category has been Updated successfully');
     }
-
     public function Delete(Request $request){
         $Data=Validator::make($request->all(),[
             'id' => 'required|exists:articles_categories,random_id',
