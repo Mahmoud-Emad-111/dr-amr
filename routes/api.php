@@ -50,7 +50,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::get('delete-account', 'deleteAccount');
         Route::get('Get-Notification', 'Get_Notification');
-        Route::post('Access-private-content','check_private_code');
+        Route::post('Access-private-content', 'check_private_code');
     });
 });
 
@@ -64,7 +64,6 @@ Route::controller(UserController::class)->prefix('/Auth/')->group(function () {
 
     // Change Password user
     Route::post('change-password', 'changePassword');
-
 });
 
 // elder Controller
@@ -230,7 +229,7 @@ Route::group(['controller' => BooksCategoriesController::class, 'prefix' => '/Ca
 Route::group(['controller' => BookController::class, 'prefix' => '/Books/'], function () {
     Route::get('Get', 'Get_Public');
     Route::get('LatestVersionBooks', 'LatestVersionBooks');
-    Route::get('Get-Books-Private','Get_Books_Private');
+    Route::get('Get-Books-Private', 'Get_Books_Private');
     Route::post('Find-Book-Public', 'GetDataId');
 });
 // handle search
@@ -245,14 +244,10 @@ Route::controller(SeacrchController::class)->prefix('/Search/')->group(function 
 
 Route::controller(SettingsController::class)->prefix('/Settings/')->group(function () {
     Route::get('Get-all', 'Get');
-
 });
 
 Route::group(['controller' => TermsConditionsController::class, 'prefix' => '/TermsConditions/'], function () {
 
     Route::get('getTermById', 'getTermById');
     Route::get('Get-Term', 'Get_Term');
-
-
 });
-

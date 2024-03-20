@@ -11,6 +11,7 @@ use App\Http\Resources\IdBookResource;
 use App\Models\Book;
 use App\Models\BooksCategories;
 use App\Models\Elder;
+use App\Models\Faviratebooks;
 use App\Traits\RandomIDTrait;
 use App\Traits\SaveImagesTrait;
 use App\Traits\SendNotification;
@@ -91,15 +92,14 @@ class BookController extends Controller
 
         if (auth('sanctum')->check()) {
 
-        $user_id = auth('sanctum')->user()->id;
+            $user_id = auth('sanctum')->user()->id;
 
-        $publicBooks = Book::where('status', 'Public')
-            ->select('books.*', 'faviratebooks.book_id as isFav')
-            ->leftJoin('faviratebooks', function ($join) use ($user_id) {
-                $join->on('books.id', '=', 'faviratebooks.book_id')
-                    ->where('faviratebooks.user_id', '=', $user_id);
-            })->get();
-
+            $publicBooks = Book::where('status', 'Public')
+                ->select('books.*', 'faviratebooks.book_id as isFav')
+                ->leftJoin('faviratebooks', function ($join) use ($user_id) {
+                    $join->on('books.id', '=', 'faviratebooks.book_id')
+                        ->where('faviratebooks.user_id', '=', $user_id);
+                })->get();
         } else {
             // إذا لم يكن المستخدم مصادقًا، يمكنك استرداد الكتب العامة دون بيانات المفضلة
             $publicBooks = Book::where('status', 'Public')->get();
@@ -115,17 +115,40 @@ class BookController extends Controller
     // get  -> Book public
     public function GetDataId(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $this->validate($request, [
             'id' => 'required|integer|exists:books,random_id',
         ]);
 
-        if ($validate->fails()) {
-            return response()->json($validate->errors());
+        $randomId = $request->id;
+
+        $book = Book::where('random_id', $randomId)->first();
+
+        if (!$book) {
+            return response()->json(['message' => 'Book not found.'], 404);
         }
-        $ID = $this->getRealID(Book::class, $request->id);
-        $data =  Book::findOrFail($ID);
-        return  Books_and_Elder_resource::make($data[0])->resolve();
+
+        $responseData = Books_and_Elder_resource::make($book)->resolve();
+
+        if (auth('sanctum')->check()) {
+            $user_id = auth('sanctum')->user()->id;
+            $isFavorite = Faviratebooks::where('user_id', $user_id)->where('book_id', $book->id)->exists();
+            $responseData['is_Favourte'] = $isFavorite;
+        }
+        return response()->json($responseData);
     }
+    // public function GetDataId(Request $request)
+    // {
+    //     $validate = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:books,random_id',
+    //     ]);
+
+    //     if ($validate->fails()) {
+    //         return response()->json($validate->errors());
+    //     }
+    //     $ID = $this->getRealID(Book::class, $request->id);
+    //     $data =  Book::findOrFail($ID);
+    //     return  Books_and_Elder_resource::make($data[0])->resolve();
+    // }
 
     public function Update(books_Updated_Request $request)
     {

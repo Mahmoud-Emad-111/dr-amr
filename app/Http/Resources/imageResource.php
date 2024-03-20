@@ -21,6 +21,7 @@ class imageResource extends JsonResource
             'image' => asset(Storage::url($this->image)),
             'image_category' => ImageCategoryResource::make(Image_Categories::find($this->image_categories_id)),
             'status'=>$this->status,
+            'is_Favourite' => $this->when(isset($this->is_Favourite), $this->is_Favourite)
         ];
     }
 }

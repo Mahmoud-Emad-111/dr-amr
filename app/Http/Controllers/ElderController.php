@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\ElderRequests;
 use App\Http\Resources\AudioAllElderResource;
 use App\Http\Resources\ELderAllAudioResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\EldersApproveResource;
 use App\Http\Resources\RelationArticlsElderResource;
 use App\Models\Audio;
 use App\Models\Elder;
+use App\Models\Favirateelder;
 use App\Models\User;
 use App\Notifications\createItem;
 use App\Traits\RandomIDTrait;
@@ -21,24 +23,26 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class ElderController extends Controller{
+class ElderController extends Controller
+{
 
-    use SaveImagesTrait,RandomIDTrait,StorageFileTrait;
-    public function store(ElderRequests $request){
+    use SaveImagesTrait, RandomIDTrait, StorageFileTrait;
+    public function store(ElderRequests $request)
+    {
         // handle image create
         $image = $this->saveImage($request->file('image'), 'elders_images');
 
- //    create db data -> books
+        //    create db data -> books
         Elder::create([
             'name' => $request->name,
             'image' => $image,
-            'email' =>$request->email,
-            'phone_number'=>$request->phone,
-            'tag' =>$request->tag,
-            'random_id'=>$this->RandomID(),
-            'status'=>$request->status,
+            'email' => $request->email,
+            'phone_number' => $request->phone,
+            'tag' => $request->tag,
+            'random_id' => $this->RandomID(),
+            'status' => $request->status,
         ]);
-        return $this->handelResponse('','The Elder  has added  successfully');
+        return $this->handelResponse('', 'The Elder  has added  successfully');
     }
 
 
@@ -58,7 +62,7 @@ class ElderController extends Controller{
         // Fetch the existing tag_name value
         $existingAudio = Elder::findOrFail($ID);
         $existingTagName = $existingAudio->tag;
-         $tags=$request->tag_name.' '.$existingTagName;
+        $tags = $request->tag_name . ' ' . $existingTagName;
 
         // Update the existing record with the updated 'tag_name'
         $existingAudio->update([
@@ -69,94 +73,120 @@ class ElderController extends Controller{
         return $this->handelResponse('', 'The tag_name has been added successfully');
     }
     //  all Elders data from database
-    public function Get(){
 
+
+    public function Get()
+    {
+        // Fetch all elders
         $data_elder = Elder::all();
+
+        // Check if user is authenticated
+        if (auth('sanctum')->check()) {
+            $user_id = auth('sanctum')->user()->id;
+
+            // Iterate over the elders to check if each one is in the user's favorites
+            $data_elder->each(function ($elder) use ($user_id) {
+                $elder->is_Favourite = Favirateelder::where('user_id', $user_id)
+                    ->where('elder_id', $elder->id)
+                    ->exists();
+            });
+        }
+
+        // Return the collection of elders
         return ElderResource::collection($data_elder)->resolve();
     }
 
+    // public function Get(){
+
+    //     $data_elder = Elder::all();
+    //     return ElderResource::collection($data_elder)->resolve();
+    // }
+
     // get elder just data id .
-    public function Id_Data_elder(Request $request){
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:elders,random_id',
+    public function Id_Data_elder(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $ID=$this->getRealID(Elder::class, $request->id);
+        $ID = $this->getRealID(Elder::class, $request->id);
         $data_elder_id =  Elder::findOrFail($ID);
 
-      return ElderResource::make($data_elder_id[0])->resolve();
+        return ElderResource::make($data_elder_id[0])->resolve();
     }
 
     // this create data with database
 
 
-     // this get id Book ->  Elder
-    public function Get_books_elder_id(Request $request){
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:elders,random_id',
+    // this get id Book ->  Elder
+    public function Get_books_elder_id(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
         ]);
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
 
-        $ID=$this->getRealID(Elder::class, $request->id);
+        $ID = $this->getRealID(Elder::class, $request->id);
         $get_id =  Elder::with('books')->findOrFail($ID);
-        return new ELderAllBooksResource( $get_id );
-
+        return new ELderAllBooksResource($get_id);
     }
     // this get Audio -> elder -> ID
-    public function Get_Audio_Id_Elder(Request $request){
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:elders,random_id',
+    public function Get_Audio_Id_Elder(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
         ]);
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
 
-        $ID=$this->getRealID(Elder::class, $request->id)->id;
+        $ID = $this->getRealID(Elder::class, $request->id)->id;
 
         $data_Audio = Elder::with('Audio')->findOrFail($ID);
 
-        return new ELderAllAudioResource( $data_Audio);
-
+        return  ELderAllAudioResource::make($data_Audio)->resolve();
     }
 
 
 
 
     //  Edit Elder and Update
-    public function Edit_Elder($id){
-        $ID=$this->getRealID(Elder::class, $id);
+    public function Edit_Elder($id)
+    {
+        $ID = $this->getRealID(Elder::class, $id);
         $data_id_just =  Elder::find($ID);
         return ElderResource::make($data_id_just);
     }
 
-    public function Update_Elder(Request $request){
+    public function Update_Elder(Request $request)
+    {
 
 
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:elders,random_id',
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
             'name' => 'required|string|max:255',
             'image' => 'image',
             'email' => 'required|email',
-            'tag_name' =>'array',
+            'tag_name' => 'array',
             'phone' => 'required|max:12',
-            'status'=>'required|in:Pending,Approve',
+            'status' => 'required|in:Pending,Approve',
 
         ]);
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $ID=$this->getRealID(Elder::class, $request->id)->id;
+        $ID = $this->getRealID(Elder::class, $request->id)->id;
         $elder =  Elder::find($ID);
-        $image=$elder->image;
+        $image = $elder->image;
         // return $elder->image;
         if ($request->hasFile('image')) {
             # code...
-                    // Step 1: Remove the old file and image
+            // Step 1: Remove the old file and image
 
             if ($elder->image) {
 
@@ -165,53 +195,53 @@ class ElderController extends Controller{
 
             // handle update IMAGE elder
             $image = $this->saveImage($request->file('image'), 'elders_images');
+        } else {
 
-        }else{
-
-            $image=$elder->image;
+            $image = $elder->image;
         }
 
         $elder->update([
             'name' => $request->name,
             'image' => $image,
-            'email' =>$request->email,
+            'email' => $request->email,
             'tag_name' => $request->tag_name,
-            'phone_number'=>$request->phone,
-            'status'=>$request->status,
+            'phone_number' => $request->phone,
+            'status' => $request->status,
         ]);
 
-        return $this->handelResponse('','The Elder has been updated successfully');
+        return $this->handelResponse('', 'The Elder has been updated successfully');
     }
 
 
-    public function get_Articles($id){
-        $ID=$this->getRealID(Elder::class, $id);
+    public function get_Articles($id)
+    {
+        $ID = $this->getRealID(Elder::class, $id);
         $data_id  = Elder::with('Article')->findOrFail($ID);
         return new RelationArticlsElderResource($data_id);
     }
 
-    public function Elders_Approve(){
-        $data_elder = Elder::with('Audio')->where('status','Approve')->get();
+    public function Elders_Approve()
+    {
+        $data_elder = Elder::with('Audio')->where('status', 'Approve')->get();
         return EldersApproveResource::collection($data_elder)->resolve();
-
     }
 
-    public function Delete(Request $request){
+    public function Delete(Request $request)
+    {
 
-        $validate=Validator::make($request->all(),[
-            'id'=> 'required|integer|exists:elders,random_id',
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:elders,random_id',
         ]);
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $ID=$this->getRealID(Elder::class, $request->id);
+        $ID = $this->getRealID(Elder::class, $request->id);
         $elder =  Elder::find($ID)[0];
 
         if ($elder->image) {
             $this->fileRemove($elder->image);
         }
         $elder->delete();
-        return $this->handelResponse('','The Elder  has been Deleted successfully');
-
+        return $this->handelResponse('', 'The Elder  has been Deleted successfully');
     }
 }

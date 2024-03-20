@@ -1,48 +1,14 @@
-<?php
+ Schema::defaultStringLength(191);
+ ابق شيل ده منServiceProvider
+ 
 
-namespace App\Http\Controllers;
 
-use App\Http\Requests\MessageRequest;
-use App\Models\Message;
-use Illuminate\Http\Request;
 
-class MessageController extends Controller
-{
-    public function create_message(MessageRequest $request)
-    {
 
-        Message::create([
 
-            'first_name' => $request->first_name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'subject' => $request->subject,
-        ]);
-        return response('don');
-    }
-    public function edit_Message($id)
-    {
-        $Message = Message::findOrFail($id);
 
-        return response('done');
-    }
-    /**update_Message */
-    public function update_Message(Request $request, $id)
-    {
-        $Up = Message::findorfail($id);
-        $Up->update([
-            'first_name' => $request->first_name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'subject' => $request->subject,
-        ]);
-        return response('done');
-    }
 
-    /**deleteMessage */
-    public function deleteMessage($id)
-    {
-        Message::findOrFail($id)->delete();
-        return response('done');
-    }
-}
+
+
+
+

@@ -10,6 +10,7 @@ use App\Http\Resources\MostListenedsource;
 use App\Models\Audio;
 use App\Models\AudiosCategories;
 use App\Models\Elder;
+use App\Models\Favirateaudios;
 use App\Traits\RandomIDTrait;
 use App\Traits\SaveImagesTrait;
 use App\Traits\SendNotification;
@@ -104,27 +105,92 @@ class AudioController extends Controller
         return $this->handelResponse('', 'The Audio has been increment successfully');
     }
 
-
-
     public function Audios_public()
     {
-        $data = Elder::with('audio')->Where('status', 'Approve')->get();
+        // Fetch elders with their approved audios
+        $data = Elder::with(['audio' => function ($query) {
+            $query->where('status', 'Approve');
+        }])->where('status', 'Approve')->get();
+
+        // Check if user is authenticated
+        if (auth('sanctum')->check()) {
+            $user_id = auth('sanctum')->user()->id;
+
+            // Iterate over the audios to check if each one is in the user's favorites
+            $data->each(function ($elder) use ($user_id) {
+                $elder->audio->each(function ($audio) use ($user_id) {
+                    $audio->is_Favourite = Favirateaudios::where('user_id', $user_id)
+                        ->where('audio_id', $audio->id)
+                        ->exists();
+                });
+            });
+        }
+
+        // Return the collection of public audios with associated elders
         return AudioPublicResource::collection($data)->resolve();
     }
 
-    public function Audios_public_id(Request $request)
-    {
-        $validate = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:audios,random_id'
-        ]);
-        if ($validate->fails()) {
-            return response()->json($validate->errors());
-        }
-        $ID = $this->getRealID(Audio::class, $request->id)->id;
 
-        $data = Audio::where('status', 'public')->find($ID);
-        return AudioResource::make($data)->resolve();
+    // public function Audios_public()
+    // {
+    //     $data = Elder::with('audio')->Where('status', 'Approve')->get();
+    //     return AudioPublicResource::collection($data)->resolve();
+    // }
+
+
+
+    public function Audios_public_id(Request $request)
+{
+    $validate = Validator::make($request->all(), [
+        'id' => 'required|integer|exists:audios,random_id'
+    ]);
+    if ($validate->fails()) {
+        return response()->json($validate->errors());
     }
+
+    $ID = $this->getRealID(Audio::class, $request->id)->id;
+
+    // Fetch the audio with public status
+    $audio = Audio::where('status', 'public')->find($ID);
+
+    // Check if the audio exists and is public
+    if (!$audio) {
+        return response()->json(['message' => 'Audio not found or not public.'], 404);
+    }
+
+    // Check if user is authenticated
+    if (auth('sanctum')->check()) {
+        $user_id = auth('sanctum')->user()->id;
+
+        // Check if the audio is in the user's favorites
+        $isFavorite = Favirateaudios::where('user_id', $user_id)
+            ->where('audio_id', $audio->id)
+            ->exists();
+
+        // Add 'is_Favourite' key to the response data
+        $responseData = AudioResource::make($audio)->resolve();
+        $responseData['is_Favourite'] = $isFavorite;
+
+        return response()->json($responseData);
+    }
+
+    // If user is not authenticated, return the audio data without favorite status
+    return response()->json(AudioResource::make($audio)->resolve());
+}
+
+    // public function Audios_public_id(Request $request)
+    // {
+    //     $validate = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:audios,random_id'
+    //     ]);
+    //     if ($validate->fails()) {
+    //         return response()->json($validate->errors());
+    //     }
+    //     $ID = $this->getRealID(Audio::class, $request->id)->id;
+
+    //     $data = Audio::where('status', 'public')->find($ID);
+    //     return AudioResource::make($data)->resolve();
+    // }
 
     // Get audios from db
     public function Get_audio()

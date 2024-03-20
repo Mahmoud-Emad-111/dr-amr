@@ -22,7 +22,7 @@ class ElderResource extends JsonResource
            'email' => $this->email,
             'status'=>$this->status,
            'phone' => $this->phone_number,
-
+           'is_Favourite' => isset($this->is_Favourite) ? $this->is_Favourite : false
         ];
     }
 }
