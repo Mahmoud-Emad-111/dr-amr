@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\AdminRegisterRequest;
 use App\Http\Resources\AdminResource;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
@@ -28,18 +29,18 @@ class AdminController extends Controller
         $data=$request->validated();
         $result=Admin::create($data);
         if($result){
-            return $this->handleResponse('','Admin Registerd Successfully');
+            // return $this->handleResponse('','Admin Registerd Successfully');
+            return $this->handelResponse('','Admin Registerd Successfully');
         }
-        return $this->handelError('','Something Went Wrong Please Try Again Later');
+        return $this->handelError('','','Something Went Wrong Please Try Again Later');
     }
 
         // Admin Login to Dashboard
     public function login (AdminLoginRequest $request)
     {
         // Validate Admin Register
-        $data=$request->validated();
-        if(auth('admin')->attempt(['email' => $request->email, 'password' => $request->password])){
-           $admin= auth('admin')->user();
+        if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])){
+            $admin = Auth::guard('admin')->user();
            $response = [
             'name' => $admin->name,
             'token' => $admin->createToken($admin->email)->plainTextToken,

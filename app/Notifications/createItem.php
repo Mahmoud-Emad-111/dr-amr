@@ -51,7 +51,14 @@ class createItem extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
+        if ($this->item->title==null) {
+            return [
+                'message'=>$this->message,
+                'ID'=>$this->item->random_id,
+                'Title'=>$this->item->title==null ? $this->item->name : $this->item->title,
+            ];
+        }
+        return $data=[
             'message'=>$this->message,
             'ID'=>$this->item->random_id,
             'Title'=>$this->item->title==null ? $this->item->name : $this->item->title,

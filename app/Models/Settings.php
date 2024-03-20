@@ -16,5 +16,6 @@ class Settings extends Model
         'image',
         'prayer_timings',
         'logo',
+        'code_private',
     ];
 }

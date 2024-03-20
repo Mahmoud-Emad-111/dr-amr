@@ -61,6 +61,8 @@ class UserController extends Controller
             $user = Auth::user();
             $response = [
                 'name' => $user->name,
+                'email'=>$user->email,
+                'phone'=>$user->phonenumber,
                 'token' => $user->createToken($user->email)->plainTextToken,
             ];
             return $this->handelResponse($response, 'login successfully');
@@ -212,6 +214,8 @@ class UserController extends Controller
         return UserResources::collection($data)->resolve();
 
     }
+
+
     public function check_private_code(Request $request){
         $validate = Validator::make($request->all(), [
             'code' => 'required|integer|exists:settings,code_private',

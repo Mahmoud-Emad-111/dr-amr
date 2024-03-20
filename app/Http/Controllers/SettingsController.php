@@ -17,8 +17,16 @@ class SettingsController extends Controller
     //
     use SaveImagesTrait,StorageFileTrait;
     public function Store(SettingsRequest $request){
-        $image=$this->saveImage($request->file('image'),'main_image');
-        $logo=$this->saveImage($request->file('logo'),'main_image');
+        $logo=null;
+        $image=null;
+        if ($request->hasFile('image')) {
+            # code...
+            $image=$this->saveImage($request->file('image'),'main_image');
+        }
+        if ($request->hasFile('logo')) {
+            # code...
+            $logo=$this->saveImage($request->file('logo'),'main_image');
+        }
         Settings::create([
             'facebook'=>$request->facebook,
             'whatsapp'=>$request->whatsapp,
