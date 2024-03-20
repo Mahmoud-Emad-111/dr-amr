@@ -25,6 +25,8 @@ class AudioPublicResource extends JsonResource
             // 'phone_number'=>$this->phone_number,
             // 'Audio' => AudioResource::collection($this->whenLoaded('Audio')),
             'count_audios'=>count($this->audio),
+            'is_Favourte' => $this->isFav == 1 ? True : False,
+
         ];
     }
 }

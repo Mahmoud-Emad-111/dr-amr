@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
 class AudioController extends Controller
 {
 
-    use SaveImagesTrait, RandomIDTrait,SendNotification;
+    use SaveImagesTrait, RandomIDTrait, SendNotification;
     public function store(AudioRequest $request)
     {
 
@@ -35,7 +35,7 @@ class AudioController extends Controller
         $audio = $request->file('audio')->store('Audio', 'dr_amr');
         // Get Validated Audio Data
 
-        $item=Audio::create([
+        $item = Audio::create([
             'title' => $request->title,
             'image' => $image,
             'audio' => $audio,
@@ -46,7 +46,7 @@ class AudioController extends Controller
             'random_id' => $this->RandomID(),
             'visits_count' => 0, // تعيين قيمة الزيارات الافتراضية إلى صفر عند الإنشاء
         ]);
-        $this->SendNotification($item,'تم اضافة صوت جديد');
+        $this->SendNotification($item, 'تم اضافة صوت جديد');
 
         return $this->handelResponse('', 'The Audio has been added successfully');
     }
@@ -140,43 +140,43 @@ class AudioController extends Controller
 
 
     public function Audios_public_id(Request $request)
-{
-    $validate = Validator::make($request->all(), [
-        'id' => 'required|integer|exists:audios,random_id'
-    ]);
-    if ($validate->fails()) {
-        return response()->json($validate->errors());
+    {
+        $validate = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:audios,random_id'
+        ]);
+        if ($validate->fails()) {
+            return response()->json($validate->errors());
+        }
+
+        $ID = $this->getRealID(Audio::class, $request->id)->id;
+
+        // Fetch the audio with public status
+        $audio = Audio::where('status', 'public')->find($ID);
+
+        // Check if the audio exists and is public
+        if (!$audio) {
+            return response()->json(['message' => 'Audio not found or not public.'], 404);
+        }
+
+        // Check if user is authenticated
+        if (auth('sanctum')->check()) {
+            $user_id = auth('sanctum')->user()->id;
+
+            // Check if the audio is in the user's favorites
+            $isFavorite = Favirateaudios::where('user_id', $user_id)
+                ->where('audio_id', $audio->id)
+                ->exists();
+
+            // Add 'is_Favourite' key to the response data
+            $responseData = AudioResource::make($audio)->resolve();
+            $responseData['is_Favourite'] = $isFavorite;
+
+            return response()->json($responseData);
+        }
+
+        // If user is not authenticated, return the audio data without favorite status
+        return response()->json(AudioResource::make($audio)->resolve());
     }
-
-    $ID = $this->getRealID(Audio::class, $request->id)->id;
-
-    // Fetch the audio with public status
-    $audio = Audio::where('status', 'public')->find($ID);
-
-    // Check if the audio exists and is public
-    if (!$audio) {
-        return response()->json(['message' => 'Audio not found or not public.'], 404);
-    }
-
-    // Check if user is authenticated
-    if (auth('sanctum')->check()) {
-        $user_id = auth('sanctum')->user()->id;
-
-        // Check if the audio is in the user's favorites
-        $isFavorite = Favirateaudios::where('user_id', $user_id)
-            ->where('audio_id', $audio->id)
-            ->exists();
-
-        // Add 'is_Favourite' key to the response data
-        $responseData = AudioResource::make($audio)->resolve();
-        $responseData['is_Favourite'] = $isFavorite;
-
-        return response()->json($responseData);
-    }
-
-    // If user is not authenticated, return the audio data without favorite status
-    return response()->json(AudioResource::make($audio)->resolve());
-}
 
     // public function Audios_public_id(Request $request)
     // {
@@ -193,16 +193,33 @@ class AudioController extends Controller
     // }
 
     // Get audios from db
+
     public function Get_audio()
     {
-        $data = Audio::with('elder')->get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Query audio with elder and check if it's favorite for the user
+        $data = Audio::with('elder')
+            ->select('audios.*', 'favirateaudios.audio_id as isFav')
+            ->leftJoin('favirateaudios', function ($join) use ($user_id) {
+                $join->on('audios.id', '=', 'favirateaudios.audio_id')
+                    ->where('favirateaudios.user_id', '=', $user_id);
+            })
+            ->get();
+
         return AudioResource::collection($data)->resolve();
-        // return $data;
     }
+
+    // public function Get_audio()
+    // {
+    //     $data = Audio::with('elder')->get();
+    //     return AudioResource::collection($data)->resolve();
+    //     // return $data;
+    // }
 
 
     // get audio Using id jUST // -> details elder
-
     public function Get_id(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -211,11 +228,38 @@ class AudioController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors());
         }
+
+        // Get real ID
         $ID = $this->getRealID(Audio::class, $request->id)->id;
 
-        $data =  Audio::with('elder')->findOrFail($ID);
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Query audio with elder and check if it's favorite for the user
+        $data = Audio::with('elder')
+            ->select('audios.*', 'favirateaudios.audio_id as isFav')
+            ->leftJoin('favirateaudios', function ($join) use ($user_id) {
+                $join->on('audios.id', '=', 'favirateaudios.audio_id')
+                    ->where('favirateaudios.user_id', '=', $user_id);
+            })
+            ->findOrFail($ID);
+
         return AudioResource::make($data)->resolve();
     }
+
+    // public function Get_id(Request $request)
+    // {
+    //     $validate = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:audios,random_id'
+    //     ]);
+    //     if ($validate->fails()) {
+    //         return response()->json($validate->errors());
+    //     }
+    //     $ID = $this->getRealID(Audio::class, $request->id)->id;
+
+    //     $data =  Audio::with('elder')->findOrFail($ID);
+    //     return AudioResource::make($data)->resolve();
+    // }
     // ,..................
 
 
@@ -303,11 +347,27 @@ class AudioController extends Controller
 
         return $this->handelResponse('', 'The Audio  has been Deleted successfully');
     }
-
     public function MostListened()
     {
-        $MostListened = Audio::orderBy('visits_count', 'desc')->take(3)->get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Query audios based on most listened
+        $MostListened = Audio::orderBy('visits_count', 'desc')->take(3)
+            ->select('audios.*', 'favirateaudios.audio_id as isFav')
+            ->leftJoin('favirateaudios', function ($join) use ($user_id) {
+                $join->on('audios.id', '=', 'favirateaudios.audio_id')
+                    ->where('favirateaudios.user_id', '=', $user_id);
+            })
+            ->get();
 
         return MostListenedsource::collection($MostListened)->resolve();
     }
+
+    // public function MostListened()
+    // {
+    //     $MostListened = Audio::orderBy('visits_count', 'desc')->take(3)->get();
+
+    //     return MostListenedsource::collection($MostListened)->resolve();
+    // }
 }

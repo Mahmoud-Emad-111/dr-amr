@@ -37,6 +37,8 @@ class AudioResource extends JsonResource
                 'name' => $this->elder->name,
                 'image' => asset(Storage::url($this->elder->image)),
                 'audio' => asset(Storage::url($this->audio)),
+                'is_Favourte' => $this->isFav == 1 ? True : False,
+
             ],
         ];
     }

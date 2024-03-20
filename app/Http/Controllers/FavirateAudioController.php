@@ -29,8 +29,8 @@ class FavirateAudioController extends Controller
         $audio_id = $this->getRealID(Audio::class, $request->audio_id)->id;
 
         $favoriteAudio = Favirateaudios::where('user_id', $user->id)
-                                        ->where('audio_id', $audio_id)
-                                        ->first();
+            ->where('audio_id', $audio_id)
+            ->first();
 
         if ($favoriteAudio) {
             $favoriteAudio->delete();
@@ -80,4 +80,4 @@ class FavirateAudioController extends Controller
             return response()->json(['error' => 'Favorite song not found'], 404);
         }
     }
-}
+}   

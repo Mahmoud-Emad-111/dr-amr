@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\RandomIDTrait;
-
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -67,7 +67,7 @@ class UserController extends Controller
             ];
             return $this->handelResponse($response, 'login successfully');
         } else {
-            return response()->json(['error' => 'unauthorised']);
+            return response()->json(['error' => 'unauthorized'], 401);
         }
     }
 
@@ -128,7 +128,7 @@ class UserController extends Controller
     {
         auth('sanctum')->user()->tokens()->delete();
         return response()->json([
-            'message'=>'Completely logout successfully',
+            'message' => 'Completely logout successfully',
 
         ]);
     }
@@ -170,27 +170,27 @@ class UserController extends Controller
     // Change Password user
     public function changePassword(Request $request)
     {
-        $request->validate([
-
+        $validator = Validator::make($request->all(), [
             'current_password' => 'required',
-
             'new_password' => 'required|string|min:8|confirmed',
-
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 401);
+        }
 
         $user = auth('sanctum')->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-
             return response()->json(['error' => 'Current password is incorrect.'], 401);
         }
 
         $user->password = Hash::make($request->new_password);
-
         $user->save();
 
-        return response()->json(['message' => 'Password changed successfully.'], 200);
+        return response()->json(['message' => 'Password changed successfully.'], 201);
     }
+
 
     public function deleteAccount(Request $request)
     {
@@ -204,26 +204,55 @@ class UserController extends Controller
 
         return response()->json(['message' => 'The account has been successfully deleted'], 200);
     }
-    public function Get_Notification(){
-          $data=auth('sanctum')->user()->unreadNotifications;
+    // Func Get Notification
+
+    public function Get_Notification()
+    {
+        $data = auth('sanctum')->user()->unreadNotifications;
         // return $data->data;
-           return NotificationNewItemRrsources::collection($data)->resolve();
+        return NotificationNewItemRrsources::collection($data)->resolve();
     }
-    public function Get_Users(){
-        $data=User::all();
+
+    // Func Delete Notification
+
+    public function Delete_Notification(Request $request)
+    {
+        Validator::make($request->all(), [
+            'id' => 'required|exists:notifications|uuid',
+        ]);
+
+        $user = auth('sanctum')->user();
+
+        $notificationId = $request->input('id');
+
+        $notification = $user->notifications()->find($notificationId);
+
+        if ($notification) {
+
+            $notification->delete();
+
+            return response()->json(['message' => 'تم حذف الإشعار بنجاح']);
+        } else {
+
+            return response()->json(['message' => 'لم يتم العثور على الإشعار'], 404);
+        }
+    }
+
+
+    public function Get_Users()
+    {
+        $data = User::all();
         return UserResources::collection($data)->resolve();
-
     }
-
-
-    public function check_private_code(Request $request){
+    public function check_private_code(Request $request)
+    {
         $validate = Validator::make($request->all(), [
             'code' => 'required|integer|exists:settings,code_private',
         ]);
 
         if ($validate->fails()) {
-            return $this->handelError($validate->errors(),'',422);
+            return $this->handelError($validate->errors(), '', 422);
         }
-        return $this->handelResponse('','The code is correct');
+        return $this->handelResponse('', 'The code is correct');
     }
 }

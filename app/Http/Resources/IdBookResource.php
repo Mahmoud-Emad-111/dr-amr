@@ -21,7 +21,7 @@ class IdBookResource extends JsonResource
             'Book' => asset(Storage::url($this->file)),
             'image' => asset(Storage::url($this->image)),
             'status' => $this->status,
-
+            'is_Favourte' => $this->isFav == 1 ? True : False,
         ];
     }
 }

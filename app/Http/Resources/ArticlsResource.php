@@ -17,7 +17,7 @@ class ArticlsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $category=Articles_Categories::find($this->articles_categories_id);
+        $category = Articles_Categories::find($this->articles_categories_id);
         return [
             'id' => $this->random_id,
             'title' => $this->title,
@@ -31,7 +31,9 @@ class ArticlsResource extends JsonResource
                 'name' => $this->elder->name,
                 'image' => asset(Storage::url($this->elder->image)),
             ],
-            "Category"=>ArticlesCategoriesResources::make($category),
+            "Category" => ArticlesCategoriesResources::make($category),
+            'is_Favourte' => $this->isFav == 1 ? True : False,
+
         ];
     }
 }

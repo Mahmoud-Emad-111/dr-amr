@@ -223,7 +223,24 @@ class BookController extends Controller
 
     public function Get_Books_Private()
     {
-        $data =  Book::where('status', 'Private')->Get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Query private books
+        $data = Book::where('status', 'Private')
+            ->select('books.*', 'faviratebooks.book_id as isFav')
+            ->leftJoin('faviratebooks', function ($join) use ($user_id) {
+                $join->on('books.id', '=', 'faviratebooks.book_id')
+                    ->where('faviratebooks.user_id', '=', $user_id);
+            })
+            ->get();
+
         return FileBookResoure::collection($data)->resolve();
     }
+
+    // public function Get_Books_Private()
+    // {
+    //     $data =  Book::where('status', 'Private')->Get();
+    //     return FileBookResoure::collection($data)->resolve();
+    // }
 }
