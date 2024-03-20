@@ -1,6 +1,70 @@
  Schema::defaultStringLength(191);
  ابق شيل ده منServiceProvider
- 
+
+
+1- phonenameber => الريسبونس تمم
+
+2- error Login 401 Done
+
+3- حذف الاشعارات باستخدام ال  uuid
+
+4- {{Api}}Audios/MostListened // don return Elder ID, NAME , Image
+
+5- {{Api}}download/getBook [
+    {
+        "id": 171710895082,
+        "name": "bookTest",
+        "Book": "http://127.0.0.1:8000/storage/books_images/O01dUcNcKxmKZMv1DFk3zjwSlBINGE4HxL1FBokb.pdf",
+        "image": "http://127.0.0.1:8000/storage/books_images/4o37d2JBWUkNvcel31EKwmxtOuuy190PEexNrbbU.jpg",
+        "status": "public"
+    }
+]  ضن
+
+
+6- changePassword if Done 201 else 401 Unauthorized
+
+
+7- {{Api}}Search/search_elder?name=klaza
+
+8- {{Api}}Search/search_audio?name=
+
+
+9- most listen ( isFav ) // Done {{Api}}Audios/MostListened don is fav
+
+
+10 - {{Api}}Books/Get-Books-Private don is fav
+
+11-  {{Api}}Audios/Get_id?id=1 don is fav
+
+12 - {{DashboardApi}}/Audios/Get   don is fav
+
+12 - {{DashboardApi}}/Elders/Get  don is fav
+
+13 - {{Api}}Elders/Get_data_elder_id?id=1 don is fav
+
+-------------------------
+كنترولار المفضلة لل ارتيكيل
+فنكشن الانشاء
+والتعديل
+والحذف
+ريسورس المفضلة للارتيكيل
+جدول ف الداتا بيز خاص بالمفضلة وموديل خاص بيها بارضو
+روت الخاصة بالمفضلة لل ارتيكيل
+\\ ---------
+
+هعدل الفنكشن ال بتجيب ال ارتيكل اخليها تشوف هل هي ف المفضلة ولا لا
+وفنكشن ال بحث عن الارتيكل هفعل فيها المفضلة
+
+
+14 - {{Api}}Search/search_articles?title=1 don is fav
+
+15 - {{DashboardApi}}/Articles/Get don is fav
+
+ 16- {{Api}}Articles/Get?id=1 t don is fav
+
+17 - {{Api}}Articles/Get-Private t don is fav
+
+18 - {{DashboardApi}}/Articles/Get-id?id=1 don is fav
 
 
 
@@ -9,6 +73,4 @@
 
 
 
-
-
-
+ // 'created_at' => $this->created_at->format('Y-m-d'),

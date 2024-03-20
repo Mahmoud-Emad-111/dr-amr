@@ -28,6 +28,8 @@ class RelationArticlsElderResource extends JsonResource
                 'name' => $this->elder->name,
                 'image' => asset(Storage::url($this->elder->image)),
             ],
+            'is_Favourte' => $this->isFav == 1 ? True : False,
+
         ];
     }
 }

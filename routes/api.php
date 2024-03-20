@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileController;
 
 use App\Http\Controllers\ElderController;
+use App\Http\Controllers\FavirateArticlesController;
 use App\Http\Controllers\FavirateAudioController;
 use App\Http\Controllers\FavirateBookController;
 use App\Http\Controllers\FavirateelderController;
@@ -51,10 +52,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('delete-account', 'deleteAccount');
         Route::get('Get-Notification', 'Get_Notification');
         Route::post('Access-private-content', 'check_private_code');
+
+        Route::delete('Delete_Notification', 'Delete_Notification');
     });
 });
 
-
+// Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::controller(UserController::class)->prefix('/Auth/')->group(function () {
     Route::post('Register', 'Register');
     Route::post('Login', 'Login');
@@ -65,6 +68,7 @@ Route::controller(UserController::class)->prefix('/Auth/')->group(function () {
     // Change Password user
     Route::post('change-password', 'changePassword');
 });
+// });
 
 // elder Controller
 Route::controller(ElderController::class)->prefix('/Elders/')->group(function () {
@@ -210,6 +214,11 @@ Route::group(['prefix' => '/Favorite/', 'middleware' => 'auth:sanctum'], functio
         Route::get('Get_Favorite_Audios', 'Get_Favirate_Audios');
         Route::get('deleteFavoriteSong', 'deleteFavoriteSong');
     });
+    Route::controller(FavirateArticlesController::class)->group(function () {
+        Route::post('Favorite-Articles', 'FavirateArticles');
+        Route::get('Get_Favorite_Articles', 'Get_Favirate_Articles');
+        Route::get('deleteFavoriteArticles', 'deleteFavoriteArticles');
+    });
 });
 
 // Main Categories books Controller
@@ -240,12 +249,11 @@ Route::controller(SeacrchController::class)->prefix('/Search/')->group(function 
     Route::post('search_articles', 'search_articles');
     Route::post('search_Book', 'search_Book');
 });
-
-
-Route::controller(SettingsController::class)->prefix('/Settings/')->group(function () {
-    Route::get('Get-all', 'Get');
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::controller(SettingsController::class)->prefix('/Settings/')->group(function () {
+        Route::get('Get-all', 'Get');
+    });
 });
-
 Route::group(['controller' => TermsConditionsController::class, 'prefix' => '/TermsConditions/'], function () {
 
     Route::get('getTermById', 'getTermById');

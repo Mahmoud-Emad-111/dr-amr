@@ -44,8 +44,6 @@ class ElderController extends Controller
         ]);
         return $this->handelResponse('', 'The Elder  has added  successfully');
     }
-
-
     public function storeTag(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -73,29 +71,21 @@ class ElderController extends Controller
         return $this->handelResponse('', 'The tag_name has been added successfully');
     }
     //  all Elders data from database
-
-
     public function Get()
     {
-        // Fetch all elders
         $data_elder = Elder::all();
-
-        // Check if user is authenticated
         if (auth('sanctum')->check()) {
             $user_id = auth('sanctum')->user()->id;
 
-            // Iterate over the elders to check if each one is in the user's favorites
             $data_elder->each(function ($elder) use ($user_id) {
-                $elder->is_Favourite = Favirateelder::where('user_id', $user_id)
+                $is_favorite = Favirateelder::where('user_id', $user_id)
                     ->where('elder_id', $elder->id)
                     ->exists();
+                $elder->is_Favourite = $is_favorite ? true : false;
             });
         }
-
-        // Return the collection of elders
         return ElderResource::collection($data_elder)->resolve();
     }
-
     // public function Get(){
 
     //     $data_elder = Elder::all();
@@ -112,11 +102,37 @@ class ElderController extends Controller
         if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $ID = $this->getRealID(Elder::class, $request->id);
-        $data_elder_id =  Elder::findOrFail($ID);
 
-        return ElderResource::make($data_elder_id[0])->resolve();
+        $ID = $this->getRealID(Elder::class, $request->id)->id;
+
+        $data_elder_id = Elder::findOrFail($ID);
+
+        if (auth('sanctum')->check()) {
+            $user_id = auth('sanctum')->user()->id;
+
+            $is_favorite = FavirateElder::where('user_id', $user_id)
+                ->where('elder_id', $data_elder_id->id)
+                ->exists();
+
+            $data_elder_id->is_Favourite = $is_favorite ? true : false;
+        }
+
+        return ElderResource::make($data_elder_id)->resolve();
     }
+    // public function Id_Data_elder(Request $request)
+    // {
+    //     $validate = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:elders,random_id',
+    //     ]);
+
+    //     if ($validate->fails()) {
+    //         return response()->json($validate->errors());
+    //     }
+    //     $ID = $this->getRealID(Elder::class, $request->id);
+    //     $data_elder_id =  Elder::findOrFail($ID);
+
+    //     return ElderResource::make($data_elder_id[0])->resolve();
+    // }
 
     // this create data with database
 
@@ -151,10 +167,6 @@ class ElderController extends Controller
 
         return  ELderAllAudioResource::make($data_Audio)->resolve();
     }
-
-
-
-
     //  Edit Elder and Update
     public function Edit_Elder($id)
     {

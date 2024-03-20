@@ -45,7 +45,7 @@ class DownloadBookController extends Controller
     {
         $user_id = auth('sanctum')->user()->id;
         $data = User::with('book')->find($user_id);
-        return IdBookResource::collection($data->image)->resolve();
+        return IdBookResource::collection($data->book)->resolve();
     }
     public function deleteDownloadBook(Request $request)
     {

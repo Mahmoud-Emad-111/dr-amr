@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticlesController extends Controller
 {
-    use SaveImagesTrait, RandomIDTrait, StorageFileTrait,SendNotification;
+    use SaveImagesTrait, RandomIDTrait, StorageFileTrait, SendNotification;
     public function Store(Request $request)
     {
         //   handle create image
@@ -40,7 +40,7 @@ class ArticlesController extends Controller
         $elder = $this->getRealID(Elder::class, $request->elder_id)->id;
         $image = $this->saveImage($request->file('image'), 'Articles_image');
 
-        $item= Articles::create([
+        $item = Articles::create([
             'title' => $request->title,
             'image' => $image,
             'content' => $request->content,
@@ -51,7 +51,7 @@ class ArticlesController extends Controller
             'random_id' => $this->RandomID(),
 
         ]);
-        $this->SendNotification($item,'تم اضافة مقال جديد');
+        $this->SendNotification($item, 'تم اضافة مقال جديد');
 
         return  $this->handelResponse('', 'The Articles has been added successfully');
     }
@@ -84,29 +84,80 @@ class ArticlesController extends Controller
 
         return $this->handelResponse('', 'The tag_name has been added successfully');
     }
-
-
     // get all data Books
     public function Get()
     {
-        $data = Articles::with('Category')->get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        $data = Articles::leftJoin('faviratearticles', function ($join) use ($user_id) {
+            $join->on('articles.id', '=', 'faviratearticles.articles_id')
+                ->where('faviratearticles.user_id', '=', $user_id);
+        })
+            ->with('Category')
+            ->select('articles.*', 'faviratearticles.id as isFav')
+            ->get();
+
         return ArticlsResource::collection($data)->resolve();
     }
+
+    // public function Get()
+    // {
+    //     $data = Articles::with('Category')->get();
+    //     return ArticlsResource::collection($data)->resolve();
+    // }
     // get all Articles public
     public function Get_public()
     {
-        $data = Articles::where('status', 'Public')->get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Fetch articles with information about user's favorites
+        $data = Articles::leftJoin('faviratearticles', function ($join) use ($user_id) {
+            $join->on('articles.id', '=', 'faviratearticles.articles_id')
+                ->where('faviratearticles.user_id', '=', $user_id);
+        })
+            ->where('articles.status', 'Public')
+            ->select('articles.*', 'faviratearticles.id as isFav')
+            ->get();
+
         return ArticlsResource::collection($data)->resolve();
     }
+
+    // public function Get_public()
+    // {
+    //     $data = Articles::where('status', 'Public')->get();
+    //     return ArticlsResource::collection($data)->resolve();
+    // }
 
 
 
     // get all Articles private
+
+
+
     public function Get_Private()
     {
-        $data = Articles::where('status', 'Private')->get();
+        // Get user ID if authenticated
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
+        // Fetch private articles with information about user's favorites
+        $data = Articles::leftJoin('faviratearticles', function ($join) use ($user_id) {
+            $join->on('articles.id', '=', 'faviratearticles.articles_id')
+                ->where('faviratearticles.user_id', '=', $user_id);
+        })
+            ->where('articles.status', 'Private')
+            ->select('articles.*', 'faviratearticles.id as isFav')
+            ->get();
+
         return ArticlsResource::collection($data)->resolve();
     }
+
+    // public function Get_Private()
+    // {
+    //     $data = Articles::where('status', 'Private')->get();
+    //     return ArticlsResource::collection($data)->resolve();
+    // }
 
 
 
@@ -132,22 +183,43 @@ class ArticlesController extends Controller
             return RelationArticlsElderResource::make($data)->resolve();
         }
     }
-
-
-
     ########### Get Public OR Private Articles using id ##########################3
     public function Get_Id(Request $request)
     {
-        $Data = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'id' => 'required|exists:articles,random_id',
         ]);
-        if ($Data->fails()) {
-            return response()->json($Data->errors());
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
         }
+
+        $user_id = auth('sanctum')->check() ? auth('sanctum')->user()->id : null;
+
         $id = $this->getRealID(Articles::class, $request->id)->id;
-        $data = Articles::with('elder')->find($id);
+
+        $data = Articles::with('elder')
+            ->leftJoin('faviratearticles', function ($join) use ($user_id) {
+                $join->on('articles.id', '=', 'faviratearticles.articles_id')
+                    ->where('faviratearticles.user_id', '=', $user_id);
+            })
+            ->select('articles.*', 'faviratearticles.id as isFav')
+            ->find($id);
+
         return RelationArticlsElderResource::make($data)->resolve();
     }
+    // public function Get_Id(Request $request)
+    // {
+    //     $Data = Validator::make($request->all(), [
+    //         'id' => 'required|exists:articles,random_id',
+    //     ]);
+    //     if ($Data->fails()) {
+    //         return response()->json($Data->errors());
+    //     }
+    //     $id = $this->getRealID(Articles::class, $request->id)->id;
+    //     $data = Articles::with('elder')->find($id);
+    //     return RelationArticlsElderResource::make($data)->resolve();
+    // }
     ############## update Article#################
 
     public function Update(Request $request)

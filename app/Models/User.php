@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function Favirate_Audios()
     {
-        return $this->belongsToMany(Audio::class,'favirateaudios');
+        return $this->belongsToMany(Audio::class, 'favirateaudios');
     }
     public function Favirate_images()
     {
@@ -80,8 +80,16 @@ class User extends Authenticatable
     }
 
 
+
     public function Favirate_Elder()
     {
-        return $this->belongsToMany(Elder::class,'favirateelders');
+        return $this->belongsToMany(Elder::class, 'favirateelders');
+    }
+
+
+
+    public function Favirate_Articles()
+    {
+        return $this->belongsToMany(Articles::class, 'favirateArticles');
     }
 }
