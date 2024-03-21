@@ -16,13 +16,16 @@ class SettingsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'facebook'=>$this->facebook,
-            'whatsapp'=>$this->whatsapp,
-            'messenger'=>$this->messenger,
-            'instagram'=>$this->instagram,
-            'image'=>asset(Storage::url($this->image)),
+            'facebook'=>$this->facebook==null?'' : $this->facebook,
+            'whatsapp'=>$this->whatsapp==null?'' : $this->whatsapp,
+            'messenger'=>$this->messenger==null?'' : $this->messenger,
+            'instagram'=>$this->instagram==null?'' : $this->instagram,
+            'play_store'=>$this->play_store==null?'' : $this->play_store,
+            'app_store'=>$this->app_store==null?'' : $this->app_store,
+            'image'=>$this->image==null?'':asset(Storage::url($this->image)),
+            'logo'=>$this->logo==null?'':asset(Storage::url($this->logo)),
             'prayer_timings'=>$this->prayer_timings==1 ? 'true':'false',
-            'facebook'=>$this->facebook,
+            // 'facebook'=>$this->facebook,
         ];
     }
 }
