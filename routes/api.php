@@ -249,11 +249,11 @@ Route::controller(SeacrchController::class)->prefix('/Search/')->group(function 
     Route::post('search_articles', 'search_articles');
     Route::post('search_Book', 'search_Book');
 });
-Route::group(['middleware' => 'auth:sanctum'], function () {
+// Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::controller(SettingsController::class)->prefix('/Settings/')->group(function () {
         Route::get('Get-all', 'Get');
     });
-});
+// });
 Route::group(['controller' => TermsConditionsController::class, 'prefix' => '/TermsConditions/'], function () {
 
     Route::get('getTermById', 'getTermById');

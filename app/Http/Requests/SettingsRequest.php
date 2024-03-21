@@ -31,6 +31,8 @@ class SettingsRequest extends FormRequest
             'logo'=>'image',
             'prayer_timings'=>'in:0,1',
             'code_private'=>'numeric',
+            'app_store'=>'url',
+            'play_store'=>'url',
         ]
         ;
     }

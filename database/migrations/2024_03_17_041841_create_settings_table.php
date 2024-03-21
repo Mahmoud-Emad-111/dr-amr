@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('facebook')->nullable();
             $table->string('whatsapp')->nullable();
             $table->string('messenger')->nullable();
+            $table->string('play_store')->nullable();
+            $table->string('app_store')->nullable();
             $table->string('instagram')->nullable();
             $table->string('image')->nullable();###main image
             $table->string('logo')->nullable();###main logo

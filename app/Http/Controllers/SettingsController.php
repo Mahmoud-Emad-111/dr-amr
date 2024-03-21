@@ -37,6 +37,8 @@ class SettingsController extends Controller
             'code_private'=>$request->code_private,
 
             'prayer_timings'=>$request->prayer_timings,
+            'app_store'=>$request->app_store,
+            'play_store'=>$request->play_store,
         ]);
         return $this->handelResponse('','Settings have been added successfully');
     }
@@ -47,6 +49,8 @@ class SettingsController extends Controller
             'facebook'=>'url',
             'whatsapp'=>'url',
             'messenger'=>'url',
+            'app_store'=>'url',
+            'play_store'=>'url',
             'instagram'=>'url',
             'image'=>'image',
             'logo'=>'image',
@@ -77,6 +81,8 @@ class SettingsController extends Controller
             'code_private'=>$request->code_private,
 
             'prayer_timings'=>$request->prayer_timings,
+            'app_store'=>$request->app_store,
+            'play_store'=>$request->play_store,
         ]);
         return $this->handelResponse('','The Settings has been updated successfully');
 

@@ -17,5 +17,7 @@ class Settings extends Model
         'prayer_timings',
         'logo',
         'code_private',
+        'app_store',
+        'play_store',
     ];
 }
